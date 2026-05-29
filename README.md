@@ -2,11 +2,39 @@
 
 > Calm the web. Keep the meaning. Reduce the noise.
 
+[![Version](https://img.shields.io/badge/version-0.1.0-2563eb?style=for-the-badge)](package.json)
+[![Manifest V3](https://img.shields.io/badge/manifest-V3-7c3aed?style=for-the-badge)](manifest.json)
+[![Platform](https://img.shields.io/badge/platform-Chrome%20%2B%20Edge-0f172a?style=for-the-badge)](README.md)
+[![License](https://img.shields.io/badge/license-MIT-10b981?style=for-the-badge)](README.md)
+[![Demo](https://img.shields.io/badge/demo-live%20preview-f59e0b?style=for-the-badge)](index.html)
+
 ![Sensory Shield overview](assets/overview.svg)
 
 Sensory Shield is a browser extension for neurodiverse users and anyone who wants a calmer reading experience.
 It turns dense, distracting pages into clearer, more structured content with a strong visual contrast between
 **overload** and **calm**.
+
+<details open>
+<summary><strong>Quick snapshot</strong></summary>
+
+| Area | What you get |
+| --- | --- |
+| Demo | A public landing page with a live calm / overload preview |
+| Extension | Manifest V3 browser extension for Chrome / Edge |
+| AI | Remote, local, and heuristic runtime modes |
+| Output | Simplified text, bullet summaries, and reduced visual distraction |
+| Bundles | Downloadable packages for macOS, Windows, and Linux |
+
+</details>
+
+<details open>
+<summary><strong>Interactive links</strong></summary>
+
+- [Live demo page](index.html)
+- [Architecture overview](assets/overview.svg)
+- [Deployment notes](DEPLOY.md)
+
+</details>
 
 ## Highlights
 
@@ -15,14 +43,6 @@ It turns dense, distracting pages into clearer, more structured content with a s
 - **AI-ready architecture** — supports remote, local, and heuristic runtime modes
 - **Readable output** — simplified text, bullet summaries, and reduced visual distraction
 - **Installer bundles** — downloadable packages for macOS, Windows, and Linux
-
-## Demo
-
-Open the landing page in this repo and try the contrast switcher:
-
-- [Live demo page](index.html)
-- [Architecture overview](assets/overview.svg)
-- [Deployment notes](DEPLOY.md)
 
 ## What it does
 
@@ -34,7 +54,8 @@ Sensory Shield focuses on three things:
 
 It is designed to help users who prefer more deliberate, lower-stimulation interfaces.
 
-## Runtime modes
+<details>
+<summary><strong>Runtime modes</strong></summary>
 
 The extension supports multiple ways to run the rewrite flow:
 
@@ -44,7 +65,10 @@ The extension supports multiple ways to run the rewrite flow:
 | Local runtime | Use a localhost model for private or offline demos |
 | Heuristic fallback | Keep the demo working even without an API key |
 
-## Installation
+</details>
+
+<details>
+<summary><strong>How to install</strong></summary>
 
 ### Load from source
 
@@ -62,7 +86,10 @@ This project also provides installer bundles for distribution and testing. These
 - Windows bundle
 - Linux bundle
 
-## Development
+</details>
+
+<details>
+<summary><strong>Development</strong></summary>
 
 ### Requirements
 
@@ -94,6 +121,8 @@ npm run pack:dmg
 npm run pack:exe
 npm run pack:linux
 ```
+
+</details>
 
 ## Project layout
 
