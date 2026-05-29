@@ -8,12 +8,18 @@
   </head>
   <body>
     <main class="container">
+      <input
+        type="password"
+        id="apiKeyInput"
+        placeholder="貼上 OpenAI API Key"
+      />
+      <button id="saveKeyBtn" class="primary">儲存 Key</button>
       <button id="neutralizeBtn" class="primary">
         啟動感官煞車 (Neutralize Page)
       </button>
+      <p id="statusText" aria-live="polite"></p>
     </main>
 
     <script src="popup.js" type="module"></script>
   </body>
 </html>
-
