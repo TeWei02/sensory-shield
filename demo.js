@@ -290,7 +290,12 @@ if (baContainer && baHandle) {
   baHandle.addEventListener('touchstart', (e) => { dragging = true; e.preventDefault(); }, { passive: false });
 
   window.addEventListener('mousemove', (e) => { if (dragging) setSliderPos(e.clientX); });
-  window.addEventListener('touchmove', (e) => { if (dragging) setSliderPos(e.touches[0].clientX); }, { passive: true });
+  window.addEventListener('touchmove', (e) => {
+    if (dragging) {
+      setSliderPos(e.touches[0].clientX);
+      e.preventDefault();
+    }
+  }, { passive: false });
 
   window.addEventListener('mouseup', () => { dragging = false; });
   window.addEventListener('touchend', () => { dragging = false; });

@@ -12,12 +12,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'SENSORY_SHIELD_START') {
     handleSensoryShield();
     sendResponse({ status: 'activated' });
-    return true;
   }
 
   if (request.type === 'SENSORY_SHIELD_RESULT') {
     handleNeutralizationResult(request);
-    return true;
   }
 });
 
@@ -60,8 +58,9 @@ function hideSensoryElements() {
     document.querySelectorAll(sel).forEach(el => { el.style.display = 'none'; });
   }
 
-  // Hide fixed/sticky overlays (floating ads, cookie banners, etc.)
-  document.querySelectorAll('*').forEach(el => {
+  // Hide fixed/sticky overlays — only check body's direct children (where
+  // overlays/modals are almost always appended) to avoid layout thrashing.
+  Array.from(document.body.children).forEach(el => {
     const pos = window.getComputedStyle(el).position;
     if (pos === 'fixed' || pos === 'sticky') {
       el.style.display = 'none';
@@ -114,13 +113,12 @@ function modifyPageStyle() {
     padding: '20px',
   });
 
-  // Kill animations so nothing flickers or distracts
-  document.querySelectorAll('*').forEach(el => {
-    if (el.style) {
-      el.style.animation = 'none';
-      el.style.transition = 'none';
-    }
-  });
+  // Kill animations via a single injected <style> — covers pseudo-elements
+  // and !important rules, and avoids layout thrashing from iterating all elements.
+  const noMotion = document.createElement('style');
+  noMotion.id = 'sensory-shield-no-motion';
+  noMotion.textContent = '* { animation: none !important; transition: none !important; }';
+  document.head.appendChild(noMotion);
 }
 
 // ─── Loading / Result rendering ───────────────────────────────────────────────

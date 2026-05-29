@@ -149,7 +149,7 @@ async function handleMessage(message, sender) {
         ok: true,
         neutralizedText,
         usedFallback: true,
-      });
+      }).catch(e => console.warn('Failed to send message to tab:', e));
       return;
     }
 
@@ -164,7 +164,7 @@ async function handleMessage(message, sender) {
       type: 'SENSORY_SHIELD_RESULT',
       ok: true,
       neutralizedText,
-    });
+    }).catch(e => console.warn('Failed to send message to tab:', e));
   } catch (err) {
     const isTimeout = err?.name === 'AbortError';
     const errorMsg = isTimeout

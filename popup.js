@@ -31,10 +31,15 @@ document.getElementById('neutralizeBtn').addEventListener('click', async () => {
     if (!tab?.id) return;
 
     try {
+        // Inject content.js on demand — only runs when user explicitly clicks
+        await chrome.scripting.executeScript({
+            target: { tabId: tab.id },
+            files: ['content.js'],
+        });
         await chrome.tabs.sendMessage(tab.id, { type: 'SENSORY_SHIELD_START' });
         window.close();
     } catch (err) {
-        console.error('Failed to send neutralize message:', err);
+        console.error('Failed to inject or message content script:', err);
     }
 });
 
