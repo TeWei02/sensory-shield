@@ -8,7 +8,6 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const mkdirp = require('mkdirp');
 
 const DIR = path.dirname(__dirname);
 const DIST_DIR = path.join(DIR, 'dist');
@@ -16,7 +15,7 @@ const EXE_DIR = path.join(DIST_DIR, 'windows');
 
 async function createEXE() {
   try {
-    await mkdirp(EXE_DIR);
+    fs.mkdirSync(EXE_DIR, { recursive: true });
 
     const extZip = path.join(DIST_DIR, 'sensory-shield.zip');
     if (!fs.existsSync(extZip)) {
@@ -91,12 +90,15 @@ For more info: https://github.com/yourusername/sensory-shield
 
     fs.writeFileSync(path.join(EXE_DIR, 'README.txt'), readmeWin);
 
-    // Create installer script using Node
-    const exePath = path.join(DIST_DIR, 'sensory-shield-0.1.0-setup.exe');
-    
     console.log('📦 Creating Windows installer structure...');
+    // Create a distributable zip since native .exe build requires Windows toolchain/signing.
+    execSync(
+      `cd "${DIST_DIR}" && zip -r "sensory-shield-0.1.0-windows.zip" "windows"`,
+      { stdio: 'pipe' }
+    );
     console.log(`✅ Windows installer prepared in: dist/windows/`);
-    console.log(`📄 Run: dist/windows/install.bat to install`);
+    console.log(`✅ Windows package created: dist/sensory-shield-0.1.0-windows.zip`);
+    console.log(`📄 End users run: windows/install.bat after extraction`);
 
   } catch (error) {
     console.error('❌ Windows packaging failed:', error.message);
