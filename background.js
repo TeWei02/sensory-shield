@@ -98,42 +98,46 @@ async function callLLM({ inputText, model, apiBaseUrl, apiKey }) {
  */
 async function handleMessage(message, sender) {
   const tabId = sender?.tab?.id;
-  if (!tabId) return;
-
-  // Support multiple possible message type names for flexibility.
-  const type = message?.type;
-
-  const isExtractedTextMessage =
-    type === 'SENSORY_SHIELD_EXTRACTED_TEXT' ||
-    type === 'NEUTRALIZE_PAGE' ||
-    type === 'SENSORY_SHIELD_NEUTRALIZE_REQUEST';
-
-  if (!isExtractedTextMessage) return;
-
-  const extractedText =
-    message?.extractedText ??
-    message?.text ??
-    message?.articleText ??
-    '';
-
-  const inputText = String(extractedText || '').trim();
-
-  if (!inputText) {
-    chrome.tabs.sendMessage(tabId, {
-      type: 'SENSORY_SHIELD_RESULT',
-      ok: false,
-      error: 'Empty input text.',
-    });
-    return;
-  }
-
   try {
+    if (!tabId) return;
+
+    const sendResult = async (payload) =>
+      chrome.tabs.sendMessage(tabId, {
+        type: 'SENSORY_SHIELD_RESULT',
+        ...payload,
+      });
+
+    // Support multiple possible message type names for flexibility.
+    const type = message?.type;
+
+    const isExtractedTextMessage =
+      type === 'SENSORY_SHIELD_EXTRACTED_TEXT' ||
+      type === 'NEUTRALIZE_PAGE' ||
+      type === 'SENSORY_SHIELD_NEUTRALIZE_REQUEST';
+
+    if (!isExtractedTextMessage) return;
+
+    const extractedText =
+      message?.extractedText ??
+      message?.text ??
+      message?.articleText ??
+      '';
+
+    const inputText = String(extractedText || '').trim();
+
+    if (!inputText) {
+      await sendResult({
+        ok: false,
+        error: 'Empty input text.',
+      });
+      return;
+    }
+
     const { openaiApiKey, openaiModel, openaiApiBaseUrl } =
       await getApiConfig();
 
     if (!openaiApiKey) {
-      chrome.tabs.sendMessage(tabId, {
-        type: 'SENSORY_SHIELD_RESULT',
+      await sendResult({
         ok: false,
         error:
           'Missing API key. Please set chrome.storage.sync.openaiApiKey and optionally openaiModel/openaiApiBaseUrl.',
@@ -148,14 +152,13 @@ async function handleMessage(message, sender) {
       apiKey: openaiApiKey,
     });
 
-    // Send back to content.js so it can render neutrally and cleanly.
-    chrome.tabs.sendMessage(tabId, {
-      type: 'SENSORY_SHIELD_RESULT',
+    await sendResult({
       ok: true,
       neutralizedText,
     });
   } catch (err) {
-    chrome.tabs.sendMessage(tabId, {
+    if (!tabId) return;
+    await chrome.tabs.sendMessage(tabId, {
       type: 'SENSORY_SHIELD_RESULT',
       ok: false,
       error: err?.message ? String(err.message) : 'Unknown error.',
