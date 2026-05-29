@@ -11,19 +11,19 @@
 
 ## 📚 Table of Contents
 
-- [🎯 Project Overview](#-project-overview)
-- [✨ Features](#-features)
-- [🧪 Interactive Demo](#-interactive-demo)
-- [⚙ How It Works](#-how-it-works)
-- [🏗 Architecture](#-architecture)
-- [🚀 Getting Started](#-getting-started)
-- [📁 Project Layout](#-project-layout)
-- [🔒 Privacy](#-privacy)
-- [🌐 Browser Support](#-browser-support)
-- [❓ FAQ](#-faq)
-- [🤝 Contributing](#-contributing)
-- [📖 References](#-references)
-- [📄 License](#-license)
+- [🎯 Project Overview](#project-overview)
+- [✨ Features](#features)
+- [🧪 Interactive Demo](#interactive-demo)
+- [⚙ How It Works](#how-it-works)
+- [🏗 Architecture](#architecture)
+- [🚀 Getting Started](#getting-started)
+- [📁 Project Layout](#project-layout)
+- [🔒 Privacy](#privacy)
+- [🌐 Browser Support](#browser-support)
+- [❓ FAQ](#faq)
+- [🤝 Contributing](#contributing)
+- [📖 References](#references)
+- [📄 License](#license)
 
 ## 🎯 Project Overview
 
