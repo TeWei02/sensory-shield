@@ -20,7 +20,7 @@
       <details id="settingsPanel" class="settings-panel">
         <summary class="settings-toggle">⚙️ 設定 (Settings)</summary>
 
-        <div class="settings-body">
+        <form id="settingsForm" class="settings-body" novalidate>
           <label class="field-label" for="apiKey">API Key</label>
           <input
             id="apiKey"
@@ -52,10 +52,10 @@
           </p>
 
           <div class="settings-actions">
-            <button id="saveBtn" class="secondary">儲存 (Save)</button>
+            <button type="submit" id="saveBtn" class="secondary">儲存 (Save)</button>
             <span id="saveStatus" class="save-status" aria-live="polite"></span>
           </div>
-        </div>
+        </form>
       </details>
     </main>
 

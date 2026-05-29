@@ -175,7 +175,7 @@ async function handleMessage(message, sender) {
       type: 'SENSORY_SHIELD_RESULT',
       ok: false,
       error: errorMsg,
-    });
+    }).catch(e => console.warn('Failed to send error message to tab:', e));
   }
 }
 

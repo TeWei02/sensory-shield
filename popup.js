@@ -1,5 +1,7 @@
 const STORAGE_KEYS = ['openaiApiKey', 'openaiModel', 'openaiApiBaseUrl'];
 
+let saveTimeout;
+
 async function loadSettings() {
     const stored = await chrome.storage.sync.get(STORAGE_KEYS);
     document.getElementById('apiKey').value = stored.openaiApiKey ?? '';
@@ -20,7 +22,8 @@ async function saveSettings() {
 
     const status = document.getElementById('saveStatus');
     status.textContent = '已儲存 ✓';
-    setTimeout(() => { status.textContent = ''; }, 2000);
+    clearTimeout(saveTimeout);
+    saveTimeout = setTimeout(() => { status.textContent = ''; }, 2000);
 }
 
 document.getElementById('neutralizeBtn').addEventListener('click', async () => {
@@ -35,6 +38,9 @@ document.getElementById('neutralizeBtn').addEventListener('click', async () => {
     }
 });
 
-document.getElementById('saveBtn').addEventListener('click', saveSettings);
+document.getElementById('settingsForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveSettings();
+});
 
 loadSettings();

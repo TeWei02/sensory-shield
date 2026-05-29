@@ -30,7 +30,7 @@ async function handleSensoryShield() {
   showLoadingState();
 
   try {
-    chrome.runtime.sendMessage({
+    await chrome.runtime.sendMessage({
       type: 'SENSORY_SHIELD_EXTRACTED_TEXT',
       extractedText: textContent,
     });
@@ -100,7 +100,7 @@ function extractMainText() {
 
   if (paragraphs.length > 0) return paragraphs.join('\n');
 
-  return document.body.innerText?.trim() ?? '';
+  return document.body?.innerText?.trim() ?? '';
 }
 
 function modifyPageStyle() {
