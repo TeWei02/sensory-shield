@@ -8,12 +8,57 @@
   </head>
   <body>
     <main class="container">
+      <div class="header">
+        <span class="logo">🛡️</span>
+        <span class="title">Sensory Shield</span>
+      </div>
+
       <button id="neutralizeBtn" class="primary">
         啟動感官煞車 (Neutralize Page)
       </button>
+
+      <details id="settingsPanel" class="settings-panel">
+        <summary class="settings-toggle">⚙️ 設定 (Settings)</summary>
+
+        <div class="settings-body">
+          <label class="field-label" for="apiKey">API Key</label>
+          <input
+            id="apiKey"
+            type="password"
+            class="field-input"
+            placeholder="sk-..."
+            autocomplete="off"
+          />
+
+          <label class="field-label" for="modelName">Model</label>
+          <input
+            id="modelName"
+            type="text"
+            class="field-input"
+            placeholder="gpt-4o-mini"
+          />
+
+          <label class="field-label" for="baseUrl">API Base URL</label>
+          <input
+            id="baseUrl"
+            type="url"
+            class="field-input"
+            placeholder="https://api.openai.com"
+          />
+
+          <p class="hint">
+            留空 API Key 將使用內建規則式簡化（無需網路）。<br />
+            Leave API Key empty to use built-in rule-based simplification (offline).
+          </p>
+
+          <div class="settings-actions">
+            <button id="saveBtn" class="secondary">儲存 (Save)</button>
+            <span id="saveStatus" class="save-status" aria-live="polite"></span>
+          </div>
+        </div>
+      </details>
     </main>
 
     <script src="popup.js" type="module"></script>
   </body>
 </html>
-

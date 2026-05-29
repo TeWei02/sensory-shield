@@ -1,51 +1,43 @@
 /**
  * content.js - Sensory Shield content script
- * 
- * Handles:
- * 1. Hide sensory stimulating elements (images, videos, ads)
- * 2. Extract main text content
- * 3. Modify page style for neutral reading experience
- * 4. Send extracted text to background.js for LLM processing
- * 5. Listen for neutralized text and render it back to page
+ *
+ * 1. Hide sensory-stimulating elements (images, videos, ads, animations)
+ * 2. Extract main article text
+ * 3. Apply neutral page style
+ * 4. Send text to background.js for LLM / heuristic processing
+ * 5. Render the neutralized result back to the page
  */
 
-// Listen for messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.type === "SENSORY_SHIELD_START") {
+  if (request.type === 'SENSORY_SHIELD_START') {
     handleSensoryShield();
-    sendResponse({ status: "Sensory Shield activated" });
+    sendResponse({ status: 'activated' });
     return true;
   }
 
-  // Listen for neutralized text from background.js
-  if (request.type === "SENSORY_SHIELD_RESULT") {
+  if (request.type === 'SENSORY_SHIELD_RESULT') {
     handleNeutralizationResult(request);
     return true;
   }
 });
 
+// ─── Orchestration ────────────────────────────────────────────────────────────
+
 async function handleSensoryShield() {
-  // 1. Hide sensory stimulating elements
   hideSensoryElements();
-
-  // 2. Extract main text content
   const textContent = extractMainText();
-
-  // 3. Modify page style for reduced sensory input
   modifyPageStyle();
-
-  // 4. Show loading state
   showLoadingState();
 
-  // 5. Send extracted text to background for LLM processing
   try {
     chrome.runtime.sendMessage({
-      type: "SENSORY_SHIELD_EXTRACTED_TEXT",
-      extractedText: textContent
+      type: 'SENSORY_SHIELD_EXTRACTED_TEXT',
+      extractedText: textContent,
     });
   } catch (err) {
-    console.error("Failed to send text to background:", err);
+    console.error('Sensory Shield: failed to contact background worker.', err);
     removeLoadingState();
+    renderError('無法連接背景程序。請重新載入擴充功能。\n(Cannot contact background worker. Try reloading the extension.)');
   }
 }
 
@@ -53,88 +45,77 @@ function handleNeutralizationResult(result) {
   removeLoadingState();
 
   if (!result.ok) {
-    console.error("Neutralization failed:", result.error);
-    renderError(result.error || "Unknown error");
+    renderError(result.error ?? 'Unknown error.');
     return;
   }
 
-  // Replace page content with neutralized text
-  renderNeutralizedContent(result.neutralizedText);
+  renderNeutralizedContent(result.neutralizedText, result.usedFallback);
 }
 
+// ─── DOM manipulation ─────────────────────────────────────────────────────────
+
 function hideSensoryElements() {
-  // Hide images, videos, audio, iframes
-  const selectors = ['img', 'video', 'audio', 'iframe'];
-  selectors.forEach(selector => {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach(el => {
-      el.style.display = 'none';
-    });
-  });
+  const mediaSelectors = ['img', 'video', 'audio', 'iframe', 'canvas', 'svg'];
+  for (const sel of mediaSelectors) {
+    document.querySelectorAll(sel).forEach(el => { el.style.display = 'none'; });
+  }
 
-  // Hide fixed/sticky positioned elements (common for floating ads)
-  const allElements = document.querySelectorAll('*');
-  allElements.forEach(el => {
-    const style = window.getComputedStyle(el);
-    if (style.position === 'fixed' || style.position === 'sticky') {
+  // Hide fixed/sticky overlays (floating ads, cookie banners, etc.)
+  document.querySelectorAll('*').forEach(el => {
+    const pos = window.getComputedStyle(el).position;
+    if (pos === 'fixed' || pos === 'sticky') {
       el.style.display = 'none';
     }
   });
 
-  // Hide common ad/popup elements
+  // Hide common ad / modal / sidebar patterns
   const adSelectors = [
-    '[class*="ad"]',
-    '[id*="ad"]',
-    '[class*="popup"]',
-    '[id*="popup"]',
-    '[class*="modal"]',
-    'aside'
+    '[class*="ad-"]', '[class*="-ad"]', '[id*="ad-"]', '[id*="-ad"]',
+    '[class*="advertisement"]', '[id*="advertisement"]',
+    '[class*="popup"]', '[id*="popup"]',
+    '[class*="modal"]', '[id*="modal"]',
+    '[class*="overlay"]', '[id*="overlay"]',
+    '[class*="banner"]', '[id*="banner"]',
+    'aside',
   ];
-  adSelectors.forEach(selector => {
+  for (const sel of adSelectors) {
     try {
-      document.querySelectorAll(selector).forEach(el => {
-        el.style.display = 'none';
-      });
-    } catch (e) {
-      // Invalid selector
-    }
-  });
+      document.querySelectorAll(sel).forEach(el => { el.style.display = 'none'; });
+    } catch { /* ignore invalid selector */ }
+  }
 }
 
 function extractMainText() {
-  // Prioritize article, main, then p tags
-  const mainSelectors = ['article', 'main', 'p'];
-
-  for (const selector of mainSelectors) {
-    const elements = document.querySelectorAll(selector);
-    if (elements.length > 0) {
-      let text = '';
-      elements.forEach(el => {
-        text += el.innerText + '\n';
-      });
-      if (text.trim()) {
-        return text.trim();
-      }
-    }
+  // Prefer semantic containers; fall back to body text
+  for (const sel of ['article', 'main']) {
+    const el = document.querySelector(sel);
+    const text = el?.innerText?.trim();
+    if (text && text.length > 100) return text;
   }
 
-  // Fallback to body text
-  return document.body.innerText?.trim() || '';
+  // Collect all paragraph text
+  const paragraphs = [...document.querySelectorAll('p')]
+    .map(p => p.innerText?.trim())
+    .filter(t => t && t.length > 20);
+
+  if (paragraphs.length > 0) return paragraphs.join('\n');
+
+  return document.body.innerText?.trim() ?? '';
 }
 
 function modifyPageStyle() {
-  // Apply neutral, accessible styling
-  document.body.style.backgroundColor = '#FAFAFA';
-  document.body.style.fontFamily = 'system-ui, -apple-system, sans-serif';
-  document.body.style.lineHeight = '1.8';
-  document.body.style.color = '#2b2b2b';
-  document.body.style.maxWidth = '800px';
-  document.body.style.margin = '0 auto';
-  document.body.style.padding = '20px';
+  Object.assign(document.body.style, {
+    backgroundColor: '#FAFAFA',
+    fontFamily: 'system-ui, -apple-system, sans-serif',
+    lineHeight: '1.8',
+    color: '#2b2b2b',
+    maxWidth: '800px',
+    margin: '0 auto',
+    padding: '20px',
+  });
 
-  // Remove excess styling that might be sensory overload
-  const allElements = document.querySelectorAll('*');
-  allElements.forEach(el => {
+  // Kill animations so nothing flickers or distracts
+  document.querySelectorAll('*').forEach(el => {
     if (el.style) {
       el.style.animation = 'none';
       el.style.transition = 'none';
@@ -142,67 +123,133 @@ function modifyPageStyle() {
   });
 }
 
+// ─── Loading / Result rendering ───────────────────────────────────────────────
+
 function showLoadingState() {
   const loader = document.createElement('div');
   loader.id = 'sensory-shield-loader';
-  loader.textContent = '處理中...';
-  loader.style.cssText = `
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #E7E0D2;
-    padding: 20px 40px;
-    border-radius: 8px;
-    font-size: 16px;
-    z-index: 10000;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  `;
+  loader.setAttribute('role', 'status');
+  loader.setAttribute('aria-live', 'polite');
+  Object.assign(loader.style, {
+    position: 'fixed',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    background: '#E7E0D2',
+    color: '#2b2b2b',
+    padding: '20px 40px',
+    borderRadius: '12px',
+    fontSize: '16px',
+    fontFamily: 'system-ui, -apple-system, sans-serif',
+    zIndex: '2147483647',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.12)',
+  });
+  loader.textContent = '🛡️ 處理中… (Processing…)';
   document.body.appendChild(loader);
 }
 
 function removeLoadingState() {
-  const loader = document.getElementById('sensory-shield-loader');
-  if (loader) {
-    loader.remove();
-  }
+  document.getElementById('sensory-shield-loader')?.remove();
 }
 
-function renderNeutralizedContent(neutralizedText) {
-  // Create a clean container for neutralized content
+/**
+ * Parse the LLM / heuristic output into proper HTML.
+ * Lines starting with "•", "-", or "* " become <li> items.
+ * Section headers (non-bullet lines) become <p> labels.
+ */
+function parseToHtml(text) {
+  const lines = text.split('\n');
+  const fragments = [];
+  let inList = false;
+
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) {
+      if (inList) { fragments.push('</ul>'); inList = false; }
+      continue;
+    }
+
+    const bulletMatch = line.match(/^[•\-\*]\s+(.+)/);
+    if (bulletMatch) {
+      if (!inList) { fragments.push('<ul>'); inList = true; }
+      fragments.push(`<li>${escapeHtml(bulletMatch[1])}</li>`);
+    } else {
+      if (inList) { fragments.push('</ul>'); inList = false; }
+      fragments.push(`<p>${escapeHtml(line)}</p>`);
+    }
+  }
+
+  if (inList) fragments.push('</ul>');
+  return fragments.join('');
+}
+
+function renderNeutralizedContent(neutralizedText, usedFallback = false) {
   const container = document.createElement('div');
   container.id = 'sensory-shield-content';
-  container.style.cssText = `
-    background: #FAFAFA;
-    color: #2b2b2b;
-    font-family: system-ui, -apple-system, sans-serif;
-    line-height: 1.8;
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
+  Object.assign(container.style, {
+    background: '#FAFAFA',
+    color: '#2b2b2b',
+    fontFamily: 'system-ui, -apple-system, sans-serif',
+    lineHeight: '1.8',
+    fontSize: '16px',
+    padding: '20px',
+    maxWidth: '800px',
+    margin: '0 auto',
+  });
+
+  const badge = usedFallback
+    ? '<p style="font-size:12px;color:#888;margin-bottom:16px;">⚡ 規則式簡化（未設定 API Key）/ Rule-based fallback (no API key set)</p>'
+    : '<p style="font-size:12px;color:#888;margin-bottom:16px;">🛡️ Sensory Shield — AI 中立化 / AI Neutralized</p>';
+
+  container.innerHTML = badge + parseToHtml(neutralizedText);
+
+  // Add some clean styling for the generated list
+  const style = document.createElement('style');
+  style.textContent = `
+    #sensory-shield-content ul {
+      padding-left: 1.4em;
+      margin: 0.5em 0 1em;
+    }
+    #sensory-shield-content li {
+      margin-bottom: 0.4em;
+    }
+    #sensory-shield-content p {
+      margin: 0.6em 0;
+    }
   `;
+  document.head.appendChild(style);
 
-  // Parse neutralized content (may contain bullet points or formatted text)
-  container.innerHTML = `<pre style="white-space: pre-wrap; word-wrap: break-word; font-family: system-ui, -apple-system, sans-serif; font-size: 16px;">${escapeHtml(neutralizedText)}</pre>`;
-
-  // Clear page and add container
   document.body.innerHTML = '';
   document.body.style.backgroundColor = '#FAFAFA';
   document.body.appendChild(container);
 }
 
 function renderError(errorMessage) {
-  const errorDiv = document.createElement('div');
-  errorDiv.style.cssText = `
-    background: #ffe6e6;
-    color: #d32f2f;
-    padding: 20px;
-    border-radius: 8px;
-    margin: 20px;
-    font-family: system-ui, -apple-system, sans-serif;
-  `;
-  errorDiv.innerHTML = `<strong>錯誤:</strong> ${escapeHtml(errorMessage)}`;
-  document.body.appendChild(errorDiv);
+  const div = document.createElement('div');
+  Object.assign(div.style, {
+    background: '#fff3f3',
+    color: '#7a1a1a',
+    border: '1px solid #f5c6c6',
+    padding: '20px',
+    borderRadius: '10px',
+    margin: '20px',
+    fontFamily: 'system-ui, -apple-system, sans-serif',
+    fontSize: '14px',
+    lineHeight: '1.6',
+    maxWidth: '760px',
+  });
+
+  const isApiKeyError = errorMessage.toLowerCase().includes('api key') ||
+    errorMessage.toLowerCase().includes('missing') ||
+    errorMessage.includes('401') || errorMessage.includes('403');
+
+  const guidance = isApiKeyError
+    ? '<br><br>💡 <strong>解決方式：</strong>點擊擴充功能圖示 → ⚙️ 設定，填入 API Key；或留空使用內建規則式簡化。<br>' +
+      '<em>Tip: Click the extension icon → ⚙️ Settings, enter your API Key, or leave it blank to use offline rule-based simplification.</em>'
+    : '';
+
+  div.innerHTML = `<strong>⚠️ 錯誤 / Error</strong><br>${escapeHtml(errorMessage)}${guidance}`;
+  document.body.appendChild(div);
 }
 
 function escapeHtml(text) {
