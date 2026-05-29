@@ -20,6 +20,9 @@ const FILES_TO_INCLUDE = [
     'popup.html',
     'popup.js',
     'popup.css',
+    'styles.css',
+    'index.html',
+    'demo.js',
 ];
 
 async function build() {
@@ -39,6 +42,11 @@ async function build() {
             if (fs.existsSync(filePath)) {
                 archive.file(filePath, { name: file });
             }
+        }
+
+        const assetsPath = path.join(DIR, 'assets');
+        if (fs.existsSync(assetsPath)) {
+            archive.directory(assetsPath, 'assets');
         }
 
         await archive.finalize();
