@@ -119,7 +119,7 @@ function extractMainText() {
   }
 
   // Fallback to body text
-  return document.body.innerText?.trim() || '';
+  return (document.body?.innerText || '').trim().slice(0, 8000);
 }
 
 function modifyPageStyle() {
@@ -143,6 +143,7 @@ function modifyPageStyle() {
 }
 
 function showLoadingState() {
+  removeLoadingState();
   const loader = document.createElement('div');
   loader.id = 'sensory-shield-loader';
   loader.textContent = '處理中...';
@@ -169,40 +170,81 @@ function removeLoadingState() {
 }
 
 function renderNeutralizedContent(neutralizedText) {
-  // Create a clean container for neutralized content
+  const existing = document.getElementById('sensory-shield-result');
+  if (existing) existing.remove();
+
   const container = document.createElement('div');
-  container.id = 'sensory-shield-content';
+  container.id = 'sensory-shield-result';
   container.style.cssText = `
-    background: #FAFAFA;
+    background: #fff;
     color: #2b2b2b;
     font-family: system-ui, -apple-system, sans-serif;
-    line-height: 1.8;
+    line-height: 1.7;
     padding: 20px;
     max-width: 800px;
-    margin: 0 auto;
+    margin: 12px auto;
+    border: 1px solid #e2e2e2;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
   `;
 
-  // Parse neutralized content (may contain bullet points or formatted text)
-  container.innerHTML = `<pre style="white-space: pre-wrap; word-wrap: break-word; font-family: system-ui, -apple-system, sans-serif; font-size: 16px;">${escapeHtml(neutralizedText)}</pre>`;
+  const lines = String(neutralizedText || '').split('\n');
+  const bulletItems = [];
+  const plainLines = [];
 
-  // Clear page and add container
-  document.body.innerHTML = '';
-  document.body.style.backgroundColor = '#FAFAFA';
-  document.body.appendChild(container);
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    const bulletMatch = line.match(/^(?:[-*•]\s*|\d+\.\s+)(.+)$/);
+    if (bulletMatch) {
+      bulletItems.push(bulletMatch[1]);
+    } else if (line) {
+      plainLines.push(line);
+    }
+  }
+
+  if (plainLines.length) {
+    const paragraph = document.createElement('p');
+    paragraph.textContent = plainLines.join('\n');
+    paragraph.style.whiteSpace = 'pre-wrap';
+    container.appendChild(paragraph);
+  }
+
+  if (bulletItems.length) {
+    const ul = document.createElement('ul');
+    for (const itemText of bulletItems) {
+      const li = document.createElement('li');
+      li.textContent = itemText;
+      ul.appendChild(li);
+    }
+    container.appendChild(ul);
+  }
+
+  if (!plainLines.length && !bulletItems.length) {
+    const paragraph = document.createElement('p');
+    paragraph.textContent = String(neutralizedText || '');
+    container.appendChild(paragraph);
+  }
+
+  document.body.insertBefore(container, document.body.firstChild);
 }
 
 function renderError(errorMessage) {
+  const existing = document.getElementById('sensory-shield-error');
+  if (existing) existing.remove();
+
   const errorDiv = document.createElement('div');
+  errorDiv.id = 'sensory-shield-error';
   errorDiv.style.cssText = `
     background: #ffe6e6;
     color: #d32f2f;
-    padding: 20px;
+    padding: 12px 16px;
     border-radius: 8px;
-    margin: 20px;
+    margin: 12px;
     font-family: system-ui, -apple-system, sans-serif;
+    border: 1px solid #f5bcbc;
   `;
   errorDiv.innerHTML = `<strong>錯誤:</strong> ${escapeHtml(errorMessage)}`;
-  document.body.appendChild(errorDiv);
+  document.body.insertBefore(errorDiv, document.body.firstChild);
 }
 
 function escapeHtml(text) {
