@@ -1,6 +1,9 @@
-# Sensory Shield
+<div align="center">
 
-> Calm the web. Keep the meaning. Reduce the noise.
+# 🛡️ Sensory Shield
+
+**Calm the web. Keep the meaning. Reduce the noise.**
+**平靜網頁，保留意義，減少雜訊。**
 
 [![Version](https://img.shields.io/badge/version-0.1.0-2563eb?style=for-the-badge)](package.json)
 [![Manifest V3](https://img.shields.io/badge/manifest-V3-7c3aed?style=for-the-badge)](manifest.json)
@@ -10,281 +13,255 @@
 
 ![Sensory Shield overview](assets/overview.svg)
 
-## 專案定位 / Project Positioning
+</div>
 
-Sensory Shield is a browser extension built for a simple but important problem:
-many web pages are technically informative but psychologically exhausting.
+---
 
-If I were the interviewer, I would want to see whether this project proves that you can:
+## 🌐 Language / 語言
 
-- identify a real user pain point
-- design for a specific audience
-- make difficult interactions feel simpler
-- explain the architecture clearly
-- ship a working demo, not only an idea
+- [English](#-overview)
+- [繁體中文](#-專案概述)
 
-That is the standard this README is written for.
+---
 
-## Why this matters
+## 📖 Overview
 
-This project is not just about a browser extension.
-It is about showing that you can take an abstract accessibility problem and turn it into a tangible product.
+**Sensory Shield** is a Manifest V3 browser extension for Chrome and Edge that neutralizes emotionally overwhelming web content for neurodiverse users. It rewrites page text using AI, strips visual clutter, and renders a calm, readable version in-place.
 
-### What I would want to hear in an interview
+### Who is it for?
+- Neurodiverse users (ADHD, autism, sensory processing differences)
+- Readers overwhelmed by dense, high-stimulation pages
+- Anyone who wants a calmer, lower-stimulation browsing experience
 
-1. **Who is this for?**
-   - neurodiverse users
-   - readers who are overwhelmed by dense pages
-   - people who want calmer, lower-stimulation interfaces
+---
 
-2. **What problem does it solve?**
-   - emotional or sensational language
-   - visual clutter
-   - pages that are technically full of information but hard to process
+## 📖 專案概述
 
-3. **How do you know it works?**
-   - there is a live demo
-   - the extension has real packaging output
-   - the runtime paths are separated and testable
+**Sensory Shield** 是一個 Manifest V3 瀏覽器擴充功能，支援 Chrome 與 Edge。它專為神經多樣性使用者設計，透過 AI 改寫頁面文字、移除視覺雜訊，並在原頁面呈現平靜、易讀的版本。
 
-## Interactive demo
+### 適合誰使用？
+- 神經多樣性使用者（ADHD、自閉症、感官處理差異）
+- 被密集、高刺激頁面壓倒的讀者
+- 任何希望更平靜瀏覽體驗的人
 
-Try the public landing page and switch between calm and overload:
+---
 
-- [Open the demo](index.html)
-- [View the architecture overview](assets/overview.svg)
+## ✨ Features / 功能特色
 
-<details open>
-<summary><strong>What the demo is showing</strong></summary>
+| Feature | 功能 | Description |
+|---------|------|-------------|
+| 🧠 AI Rewrite | AI 改寫 | Neutralizes emotional/sensational language via LLM |
+| 🙈 Clutter Removal | 移除雜訊 | Hides images, ads, videos, sticky elements |
+| 🎨 Calm Styling | 平靜樣式 | Applies clean typography and reduced contrast |
+| 🔌 Multi-Runtime | 多重執行模式 | Remote LLM, local model, or heuristic fallback |
+| 🌐 Demo Mode | 展示模式 | Live calm/overload preview on landing page |
+| 📦 Packaged Builds | 打包版本 | Distributable zip for Chrome/Edge |
 
-| State | Meaning |
-| --- | --- |
-| Calm | Clean typography, reduced clutter, easier scanning |
-| Overload | Stronger contrast, more visual noise, higher stimulation |
-| Reset | Back to the default neutral presentation |
+---
 
-</details>
+## 🤖 AI / LLM / Agent Support
 
-<details>
-<summary><strong>Why I would like this in an interview</strong></summary>
+Sensory Shield supports **three runtime modes** for its AI rewriting engine.
 
-- It demonstrates product thinking, not just code output.
-- It gives a clear before/after story.
-- It makes the accessibility goal visible within seconds.
-- It helps the candidate explain design decisions without hand-waving.
+### ☁️ Cloud / Remote LLM (雲端模式)
 
-</details>
+Uses any **OpenAI-compatible API endpoint**. Works with these **free or low-cost providers**:
 
-## What the project demonstrates
+| Provider | Free Tier | Suggested Model | API Base URL |
+|----------|-----------|----------------|--------------|
+| [OpenAI](https://platform.openai.com) | $5 free credit | `gpt-4o-mini` | `https://api.openai.com` |
+| [Groq](https://console.groq.com) | ✅ Free (rate limited) | `llama-3.3-70b-versatile` | `https://api.groq.com/openai` |
+| [OpenRouter](https://openrouter.ai) | ✅ Free models available | `mistralai/mistral-7b-instruct:free` | `https://openrouter.ai/api` |
+| [Together AI](https://api.together.xyz) | $1 free credit | `mistralai/Mixtral-8x7B-Instruct-v0.1` | `https://api.together.xyz` |
+| [Mistral AI](https://console.mistral.ai) | ✅ Free tier | `mistral-small-latest` | `https://api.mistral.ai` |
+| [Cohere](https://dashboard.cohere.com) | ✅ Free trial | `command-r` | `https://api.cohere.ai/compatibility/v1` |
 
-Think of this as evidence of capability in four directions:
+> **How to configure / 如何設定：** Enter your API Key and Base URL in the extension popup. Keys are stored in `chrome.storage.sync` and never leave your browser.
 
-### 1. Product thinking
+### 🏠 Local / On-device LLM (本地部署模式)
 
-The project starts from a user need and converts it into a usable workflow.
-
-### 2. Front-end execution
-
-There is a public landing page, a demo mode, and a visual system that communicates the idea quickly.
-
-### 3. Extension architecture
-
-The extension is built as a Manifest V3 browser extension with a service worker, content script, popup, and packaging pipeline.
-
-### 4. AI / runtime strategy
-
-The runtime can be remote, local, or fallback-based, which shows awareness of real-world constraints.
-
-<details open>
-<summary><strong>Snapshot</strong></summary>
-
-| Area | What you get |
-| --- | --- |
-| Demo | A live calm / overload preview on the public page |
-| Extension | Manifest V3 browser extension for Chrome / Edge |
-| AI | Remote, local, and heuristic runtime modes |
-| Output | Simplified text, bullet summaries, and calmer visual styling |
-| Bundles | Downloadable packages for macOS, Windows, and Linux |
-
-</details>
-
-## Technical story
-
-Sensory Shield focuses on three core actions:
-
-1. **Neutralize** emotional or sensational language
-2. **Simplify** content into easier-to-scan structure
-3. **Reduce** visual overload with calmer styling and fewer distractions
-
-That is the story I would want a student to be able to explain clearly in an interview.
-
-<details open>
-<summary><strong>Runtime modes</strong></summary>
-
-The extension supports multiple ways to run the rewrite flow:
-
-| Mode | Purpose | Interview value |
-| --- | --- | --- |
-| Remote LLM | OpenAI-compatible cloud rewriting | Shows API integration and abstraction |
-| Local runtime | localhost model usage | Shows privacy and offline awareness |
-| Heuristic fallback | rule-based rewriting | Shows resilience when dependencies fail |
-
-</details>
-
-<details>
-<summary><strong>Why this architecture is strong</strong></summary>
-
-- It keeps the UI usable even if a model is unavailable.
-- It separates demo presentation from page transformation logic.
-- It makes local testing possible without a cloud account.
-- It leaves room for future agentic or multi-model workflows.
-
-</details>
-
-## Evidence of execution
-
-### Install from source
-
-1. Clone this repository
-2. Open Chrome or Edge
-3. Go to the extensions page
-4. Enable developer mode
-5. Choose **Load unpacked** and select this folder
-
-> This project ships extension packages, not desktop apps.
-
-### Packaged downloads
-
-If you want a distributable build, use the packaged outputs.
-
-- macOS bundle
-- Windows bundle
-- Linux bundle
-
-<details>
-<summary><strong>Packaging note</strong></summary>
-
-The build scripts produce browser-extension artifacts so you can test or distribute the project in a realistic way.
-
-</details>
-
-### Development commands
+Run a local model with **Ollama** or **LM Studio** for full offline privacy:
 
 ```bash
-npm install
-npm run build
-npm run dist
-npm run pack:dmg
-npm run pack:exe
-npm run pack:linux
+# Install Ollama / 安裝 Ollama
+brew install ollama            # macOS
+winget install Ollama.Ollama   # Windows
+curl -fsSL https://ollama.com/install.sh | sh  # Linux
+
+# Pull a model / 下載模型
+ollama pull llama3.2
+ollama pull mistral
+ollama pull qwen2.5
+
+# Start local server (default: http://localhost:11434)
+ollama serve
 ```
 
-## Project layout
+Set the extension API Base URL to:
+- **Ollama:** `http://localhost:11434`
+- **LM Studio:** `http://localhost:1234`
 
-<details>
-<summary><strong>Open the structure</strong></summary>
+No API key required for local mode. / 本地模式不需要 API Key。
 
-```text
-.
-├── background.js        # Service worker and runtime routing
-├── content.js           # Page transformation and demo behavior
-├── demo.js              # Public landing page interactions
-├── index.html           # Visual public homepage / demo page
-├── manifest.json        # Extension manifest
+### 🔧 Heuristic Fallback (啟發式備援模式)
+
+When no LLM is available, Sensory Shield uses built-in rule-based simplification — removes exclamation marks, shortens sentences, strips emotional keywords. No internet or API key required.
+
+---
+
+## 🎮 Demo / 線上展示
+
+- 🌐 **[Open Live Demo](https://tewei02.github.io/sensory-shield/)** — GitHub Pages public site
+- 📐 **[Architecture Overview](assets/overview.svg)** — system diagram
+
+### Demo States / 展示狀態
+
+| State | Emoji | Description |
+|-------|-------|-------------|
+| Calm 平靜 | 😌 | Clean typography, reduced clutter, easier scanning |
+| Overload 超載 | 😵 | Stronger contrast, more visual noise, higher stimulation |
+| Reset 重置 | 🔄 | Back to the default neutral presentation |
+
+---
+
+## 🏗️ Architecture / 系統架構
+
+```
+User clicks popup button
+        │
+        ▼
+   popup.js ──sendMessage──▶ content.js
+                                  │
+                      ┌───────────┼───────────┐
+                      │           │           │
+               Hide elements   Extract    Modify styles
+               (ads, media)     text
+                                  │
+                                  ▼
+                         background.js (Service Worker)
+                                  │
+                      ┌───────────┼───────────┐
+                      │           │           │
+               ☁️ Remote LLM  🏠 Local LLM  🔧 Heuristic
+               (any OpenAI-    (Ollama /     (rule-based
+                compat API)    LM Studio)     fallback)
+                                  │
+                                  ▼
+                         content.js renders
+                         neutralized text
+```
+
+### File Structure / 檔案結構
+
+```
+sensory-shield/
+├── manifest.json        # MV3 extension config / 擴充功能設定
+├── background.js        # Service worker + LLM API caller
+├── content.js           # Page manipulation + text extraction
 ├── popup.html           # Extension popup UI
-├── popup.js             # Popup interactions
-├── popup.css            # Popup styling
-├── styles.css           # Public site styling
+├── popup.js             # Popup logic + API key config
+├── popup.css            # Popup styles
+├── index.html           # Landing page + live demo
+├── demo.js              # Demo mode toggle logic
+├── styles.css           # Landing page styles
 ├── assets/
-│   └── overview.svg     # Visual overview diagram
+│   └── overview.svg     # Architecture diagram
 └── scripts/
-    ├── build.js         # Build extension package
-    ├── pack-dmg.js      # macOS bundle builder
-    ├── pack-exe.js      # Windows bundle builder
-    └── pack-linux.js    # Linux bundle builder
+    ├── build.js         # Package extension to .zip
+    ├── pack-dmg.js      # macOS bundle
+    ├── pack-exe.js      # Windows bundle
+    └── pack-linux.js    # Linux bundle
 ```
 
-</details>
+---
 
-## What a professor would likely ask
+## 🚀 Getting Started / 快速開始
 
-<details>
-<summary><strong>How did you decide the scope?</strong></summary>
+### Install from Source / 從原始碼安裝
 
-The scope is intentionally focused: one clear pain point, one visible demo, and one workable extension workflow.
+```bash
+# 1. Clone the repo / 複製專案
+git clone https://github.com/TeWei02/sensory-shield.git
+cd sensory-shield
 
-</details>
+# 2. Install dependencies / 安裝依賴
+npm install
 
-<details>
-<summary><strong>What is the hardest technical part?</strong></summary>
+# 3. Build extension zip / 打包擴充功能
+npm run build
+```
 
-Keeping the architecture flexible enough to support remote, local, and fallback runtime paths without making the UI confusing.
+Load in Chrome/Edge / 載入瀏覽器：
+1. Go to `chrome://extensions`
+2. Enable **Developer mode** / 開啟開發人員模式
+3. Click **Load unpacked** → select this folder / 選擇此資料夾
 
-</details>
+### Packaged Downloads / 打包下載
 
-<details>
-<summary><strong>What would you improve next?</strong></summary>
+```bash
+npm run pack:dmg    # macOS .dmg bundle
+npm run pack:exe    # Windows .zip bundle
+npm run pack:linux  # Linux .tar.gz bundle
+```
 
-I would add stronger tests, richer screenshots, and a more complete evaluation of user experience for different reading contexts.
+### Configure AI / 設定 AI
 
-</details>
+1. Get a free API key from any [provider listed above](#%EF%B8%8F-cloud--remote-llm-%E9%9B%B2%E7%AB%AF%E6%A8%A1%E5%BC%8F)
+2. Click the 🛡️ extension icon in your browser toolbar
+3. Enter your **API Key** and (optionally) a custom **API Base URL**
+4. Click **Save** — stored only in `chrome.storage.sync` locally
 
-## Privacy
+---
 
-- No extension server is required
-- No usage analytics are included
-- Content processing stays inside the selected runtime path
-- API keys remain in the browser environment
+## 🔒 Privacy / 隱私
 
-## Browser support
+| Item | Status |
+|------|--------|
+| Extension server required | ❌ None needed |
+| Usage analytics | ❌ Not collected |
+| API key storage | ✅ Local `chrome.storage.sync` only |
+| Content processing | ✅ Stays in your chosen runtime |
+| Local mode availability | ✅ Fully offline capable |
+
+---
+
+## 🌍 Browser Support / 瀏覽器支援
 
 | Browser | Status |
-| --- | --- |
-| Chrome | Supported |
-| Edge | Supported |
-| Firefox | Not targeted yet |
+|---------|--------|
+| Chrome | ✅ Supported |
+| Edge | ✅ Supported |
+| Firefox | 🔜 Planned |
+| Safari | 🔜 Planned |
 
-## FAQ
+---
 
-<details>
-<summary><strong>Is this a desktop app?</strong></summary>
+## 🤝 Contributing / 貢獻
 
-No. It is a browser extension with packaged installs for different platforms.
+Contributions are welcome! / 歡迎貢獻！
 
-</details>
+```bash
+git fork https://github.com/TeWei02/sensory-shield
+git checkout -b feat/your-feature
+git commit -m "feat: describe your change"
+git push origin feat/your-feature
+# Open a Pull Request / 開 Pull Request
+```
 
-<details>
-<summary><strong>Do I need an API key?</strong></summary>
+---
 
-Not for the demo. The extension has fallback paths so the project remains usable in local and offline-friendly setups.
-
-</details>
-
-<details>
-<summary><strong>Why keep the README interactive?</strong></summary>
-
-Because the project itself is interactive. The README should behave like a guided project presentation, not only a static specification.
-
-</details>
-
-## Contributing
-
-Contributions are welcome.
-
-1. Fork the repository
-2. Create a branch
-3. Open a pull request
-
-## References
-
-These are the main sources that informed the project’s accessibility and extension design:
+## 📚 References / 參考資料
 
 - [Chrome Extensions Manifest V3](https://developer.chrome.com/docs/extensions/mv3/)
-- [Microsoft Edge Extension docs](https://learn.microsoft.com/en-us/microsoft-edge/extensions-chromium/)
+- [Microsoft Edge Extension docs](https://docs.microsoft.com/en-us/microsoft-edge/extensions-chromium/)
 - [W3C WCAG 2.2](https://www.w3.org/TR/WCAG22/)
-- [WAI accessibility tutorials](https://www.w3.org/WAI/tutorials/)
-- [Microsoft Inclusive Design](https://inclusive.microsoft.design/)
+- [WAI Accessibility Tutorials](https://www.w3.org/WAI/tutorials/)
+- [Microsoft Inclusive Design](https://www.microsoft.com/design/inclusive/)
+- [Ollama](https://ollama.com) — local LLM runtime
+- [OpenRouter](https://openrouter.ai) — free model gateway
 
-## License
+---
+
+## 📄 License / 授權
 
 MIT © 2024 Sensory Shield Team
