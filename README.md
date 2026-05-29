@@ -212,6 +212,8 @@ npm run pack:linux  # Linux bundle
 
 ## 🤝 Contributing
 
+Built with the assistance of **[Claude](https://claude.ai)** by Anthropic.
+
 ```bash
 git checkout -b feat/your-feature
 git commit -m "feat: describe your change"
@@ -230,6 +232,7 @@ git push origin feat/your-feature
 - [Microsoft Inclusive Design](https://www.microsoft.com/design/inclusive/)
 - [Ollama](https://ollama.com) — local LLM runtime
 - [OpenRouter](https://openrouter.ai) — free model gateway
+- [Claude](https://claude.ai) — AI assistant by Anthropic
 
 ---
 
