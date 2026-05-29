@@ -1,6 +1,5 @@
-# Sensory Shield
-
-> Calm the web. Keep the meaning. Reduce the noise.
+<h1 align="center">Sensory Shield</h1>
+<p align="center"><strong>Calm the web. Keep the meaning. Reduce the noise.</strong></p>
 
 [![Version](https://img.shields.io/badge/version-0.1.0-2563eb?style=for-the-badge)](package.json)
 [![Manifest V3](https://img.shields.io/badge/manifest-V3-7c3aed?style=for-the-badge)](manifest.json)
@@ -10,140 +9,151 @@
 
 ![Sensory Shield overview](assets/overview.svg)
 
-## 專案定位 / Project Positioning
+## 📚 Table of Contents
 
-Sensory Shield is a browser extension built for a simple but important problem:
-many web pages are technically informative but psychologically exhausting.
+- [🎯 Project Overview](#-project-overview)
+- [✨ Features](#-features)
+- [🧪 Interactive Demo](#-interactive-demo)
+- [⚙ How It Works](#-how-it-works)
+- [🏗 Architecture](#-architecture)
+- [🚀 Getting Started](#-getting-started)
+- [📁 Project Layout](#-project-layout)
+- [🔒 Privacy](#-privacy)
+- [🌐 Browser Support](#-browser-support)
+- [❓ FAQ](#-faq)
+- [🤝 Contributing](#-contributing)
+- [📖 References](#-references)
+- [📄 License](#-license)
 
-If I were the interviewer, I would want to see whether this project proves that you can:
+## 🎯 Project Overview
 
-- identify a real user pain point
-- design for a specific audience
-- make difficult interactions feel simpler
-- explain the architecture clearly
-- ship a working demo, not only an idea
+Sensory Shield is a browser extension built to address a practical accessibility challenge: many web pages are technically informative but psychologically exhausting.
 
-That is the standard this README is written for.
+The project focuses on:
 
-## Why this matters
+- identifying a real user pain point
+- designing for a specific audience
+- making difficult interactions feel simpler
+- explaining architecture clearly
+- shipping a working demo, not just an idea
 
-This project is not just about a browser extension.
-It is about showing that you can take an abstract accessibility problem and turn it into a tangible product.
+This project demonstrates how to turn an abstract accessibility problem into a tangible product.
 
-### What I would want to hear in an interview
+### 👥 Target Audience
 
-1. **Who is this for?**
-   - neurodiverse users
-   - readers who are overwhelmed by dense pages
-   - people who want calmer, lower-stimulation interfaces
+- neurodiverse users
+- readers who are overwhelmed by dense pages
+- people who want calmer, lower-stimulation interfaces
 
-2. **What problem does it solve?**
-   - emotional or sensational language
-   - visual clutter
-   - pages that are technically full of information but hard to process
+### 🧩 Problems Addressed
 
-3. **How do you know it works?**
-   - there is a live demo
-   - the extension has real packaging output
-   - the runtime paths are separated and testable
+- emotional or sensational language
+- visual clutter
+- pages that are information-rich but hard to process
 
-## Interactive demo
+### ✅ Evidence of Effectiveness
 
-Try the public landing page and switch between calm and overload:
+- a live demo is available
+- the extension has real packaging output
+- runtime paths are separated and testable
+
+## ✨ Features
+
+Sensory Shield demonstrates capability across four areas:
+
+### 1) Product Thinking
+
+The project starts from user needs and converts them into a usable workflow.
+
+### 2) Front-End Execution
+
+A public landing page, demo mode, and visual system communicate value quickly.
+
+### 3) Extension Architecture
+
+The extension is implemented with Manifest V3 using a service worker, content script, popup UI, and packaging pipeline.
+
+### 4) AI and Runtime Strategy
+
+The runtime supports remote, local, and fallback-based rewrite flows for resilience.
+
+<details open>
+<summary><strong>Snapshot</strong></summary>
+
+| Area      | What You Get                                           |
+|-----------|---------------------------------------------------------|
+| Demo      | Live calm/overload preview on the public page          |
+| Extension | Manifest V3 browser extension for Chrome and Edge      |
+| AI        | Remote, local, and heuristic runtime modes             |
+| Output    | Simplified text, bullet summaries, calmer visual style |
+| Bundles   | Downloadable packages for macOS, Windows, and Linux    |
+
+</details>
+
+## 🧪 Interactive Demo
+
+Try the public landing page and switch between calm and overload modes:
 
 - [Open the demo](index.html)
 - [View the architecture overview](assets/overview.svg)
 
 <details open>
-<summary><strong>What the demo is showing</strong></summary>
+<summary><strong>Demo states</strong></summary>
 
-| State | Meaning |
-| --- | --- |
-| Calm | Clean typography, reduced clutter, easier scanning |
-| Overload | Stronger contrast, more visual noise, higher stimulation |
-| Reset | Back to the default neutral presentation |
-
-</details>
-
-<details>
-<summary><strong>Why I would like this in an interview</strong></summary>
-
-- It demonstrates product thinking, not just code output.
-- It gives a clear before/after story.
-- It makes the accessibility goal visible within seconds.
-- It helps the candidate explain design decisions without hand-waving.
+| State    | Meaning                                                  |
+|----------|-----------------------------------------------------------|
+| Calm     | Clean typography, reduced clutter, easier scanning        |
+| Overload | Stronger contrast, more visual noise, higher stimulation  |
+| Reset    | Returns to the default neutral presentation               |
 
 </details>
 
-## What the project demonstrates
+## ⚙ How It Works
 
-Think of this as evidence of capability in four directions:
-
-### 1. Product thinking
-
-The project starts from a user need and converts it into a usable workflow.
-
-### 2. Front-end execution
-
-There is a public landing page, a demo mode, and a visual system that communicates the idea quickly.
-
-### 3. Extension architecture
-
-The extension is built as a Manifest V3 browser extension with a service worker, content script, popup, and packaging pipeline.
-
-### 4. AI / runtime strategy
-
-The runtime can be remote, local, or fallback-based, which shows awareness of real-world constraints.
-
-<details open>
-<summary><strong>Snapshot</strong></summary>
-
-| Area | What you get |
-| --- | --- |
-| Demo | A live calm / overload preview on the public page |
-| Extension | Manifest V3 browser extension for Chrome / Edge |
-| AI | Remote, local, and heuristic runtime modes |
-| Output | Simplified text, bullet summaries, and calmer visual styling |
-| Bundles | Downloadable packages for macOS, Windows, and Linux |
-
-</details>
-
-## Technical story
-
-Sensory Shield focuses on three core actions:
+Sensory Shield is built around three core actions:
 
 1. **Neutralize** emotional or sensational language
 2. **Simplify** content into easier-to-scan structure
 3. **Reduce** visual overload with calmer styling and fewer distractions
 
-That is the story I would want a student to be able to explain clearly in an interview.
-
 <details open>
 <summary><strong>Runtime modes</strong></summary>
 
-The extension supports multiple ways to run the rewrite flow:
-
-| Mode | Purpose | Interview value |
-| --- | --- | --- |
-| Remote LLM | OpenAI-compatible cloud rewriting | Shows API integration and abstraction |
-| Local runtime | localhost model usage | Shows privacy and offline awareness |
-| Heuristic fallback | rule-based rewriting | Shows resilience when dependencies fail |
+| Mode               | Purpose                           | Value Provided                                |
+|--------------------|-----------------------------------|-----------------------------------------------|
+| Remote LLM         | OpenAI-compatible cloud rewriting | API integration and abstraction                |
+| Local runtime      | localhost model usage             | Privacy and offline awareness                  |
+| Heuristic fallback | rule-based rewriting              | Resilience when external dependencies are down |
 
 </details>
 
 <details>
-<summary><strong>Why this architecture is strong</strong></summary>
+<summary><strong>Architecture strengths</strong></summary>
 
-- It keeps the UI usable even if a model is unavailable.
-- It separates demo presentation from page transformation logic.
-- It makes local testing possible without a cloud account.
-- It leaves room for future agentic or multi-model workflows.
+- Keeps the UI usable if a model is unavailable
+- Separates demo presentation from page transformation logic
+- Enables local testing without a cloud account
+- Leaves room for future agentic or multi-model workflows
 
 </details>
 
-## Evidence of execution
+## 🏗 Architecture
 
-### Install from source
+The scope is intentionally focused: one clear pain point, one visible demo, and one workable extension workflow.
+
+### Technical challenge
+
+Keeping architecture flexible enough to support remote, local, and fallback runtime paths without making the UI confusing.
+
+### Next improvements
+
+- stronger tests
+- richer screenshots
+- deeper UX evaluation across reading contexts
+
+## 🚀 Getting Started
+
+### Install from Source
 
 1. Clone this repository
 2. Open Chrome or Edge
@@ -153,9 +163,9 @@ The extension supports multiple ways to run the rewrite flow:
 
 > This project ships extension packages, not desktop apps.
 
-### Packaged downloads
+### Packaged Downloads
 
-If you want a distributable build, use the packaged outputs.
+Use packaged outputs for distributable builds:
 
 - macOS bundle
 - Windows bundle
@@ -164,11 +174,11 @@ If you want a distributable build, use the packaged outputs.
 <details>
 <summary><strong>Packaging note</strong></summary>
 
-The build scripts produce browser-extension artifacts so you can test or distribute the project in a realistic way.
+Build scripts produce browser-extension artifacts for realistic testing and distribution.
 
 </details>
 
-### Development commands
+### Development Commands
 
 ```bash
 npm install
@@ -179,10 +189,10 @@ npm run pack:exe
 npm run pack:linux
 ```
 
-## Project layout
+## 📁 Project Layout
 
 <details>
-<summary><strong>Open the structure</strong></summary>
+<summary><strong>Repository structure</strong></summary>
 
 ```text
 .
@@ -206,45 +216,22 @@ npm run pack:linux
 
 </details>
 
-## What a professor would likely ask
-
-<details>
-<summary><strong>How did you decide the scope?</strong></summary>
-
-The scope is intentionally focused: one clear pain point, one visible demo, and one workable extension workflow.
-
-</details>
-
-<details>
-<summary><strong>What is the hardest technical part?</strong></summary>
-
-Keeping the architecture flexible enough to support remote, local, and fallback runtime paths without making the UI confusing.
-
-</details>
-
-<details>
-<summary><strong>What would you improve next?</strong></summary>
-
-I would add stronger tests, richer screenshots, and a more complete evaluation of user experience for different reading contexts.
-
-</details>
-
-## Privacy
+## 🔒 Privacy
 
 - No extension server is required
 - No usage analytics are included
 - Content processing stays inside the selected runtime path
 - API keys remain in the browser environment
 
-## Browser support
+## 🌐 Browser Support
 
-| Browser | Status |
-| --- | --- |
-| Chrome | Supported |
-| Edge | Supported |
+| Browser | Status           |
+|---------|------------------|
+| Chrome  | Supported        |
+| Edge    | Supported        |
 | Firefox | Not targeted yet |
 
-## FAQ
+## ❓ FAQ
 
 <details>
 <summary><strong>Is this a desktop app?</strong></summary>
@@ -256,18 +243,18 @@ No. It is a browser extension with packaged installs for different platforms.
 <details>
 <summary><strong>Do I need an API key?</strong></summary>
 
-Not for the demo. The extension has fallback paths so the project remains usable in local and offline-friendly setups.
+Not for the demo. The extension includes fallback paths so the project remains usable in local and offline-friendly setups.
 
 </details>
 
 <details>
 <summary><strong>Why keep the README interactive?</strong></summary>
 
-Because the project itself is interactive. The README should behave like a guided project presentation, not only a static specification.
+Because the project itself is interactive. The README is designed as a guided project presentation rather than only a static specification.
 
 </details>
 
-## Contributing
+## 🤝 Contributing
 
 Contributions are welcome.
 
@@ -275,9 +262,9 @@ Contributions are welcome.
 2. Create a branch
 3. Open a pull request
 
-## References
+## 📖 References
 
-These are the main sources that informed the project’s accessibility and extension design:
+Main sources informing accessibility and extension design:
 
 - [Chrome Extensions Manifest V3](https://developer.chrome.com/docs/extensions/mv3/)
 - [Microsoft Edge Extension docs](https://learn.microsoft.com/en-us/microsoft-edge/extensions-chromium/)
@@ -285,6 +272,6 @@ These are the main sources that informed the project’s accessibility and exten
 - [WAI accessibility tutorials](https://www.w3.org/WAI/tutorials/)
 - [Microsoft Inclusive Design](https://inclusive.microsoft.design/)
 
-## License
+## 📄 License
 
 MIT © 2024 Sensory Shield Team
