@@ -7,7 +7,6 @@
 const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
-const mkdirp = require('mkdirp');
 
 const DIR = path.dirname(__dirname);
 const DIST_DIR = path.join(DIR, 'dist');
@@ -15,7 +14,7 @@ const LINUX_DIR = path.join(DIST_DIR, 'linux');
 
 async function createLinuxPackage() {
     try {
-        await mkdirp(LINUX_DIR);
+        fs.mkdirSync(LINUX_DIR, { recursive: true });
 
         const extZip = path.join(DIST_DIR, 'sensory-shield.zip');
         if (!fs.existsSync(extZip)) {

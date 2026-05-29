@@ -8,7 +8,6 @@
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
-const mkdirp = require('mkdirp');
 
 const DIR = path.dirname(__dirname);
 const DIST_DIR = path.join(DIR, 'dist');
@@ -23,7 +22,7 @@ async function createDMG() {
             return;
         }
 
-        await mkdirp(DMG_TEMP);
+        fs.mkdirSync(DMG_TEMP, { recursive: true });
 
         // Copy extension to DMG temp folder
         const extZip = path.join(DIST_DIR, 'sensory-shield.zip');
@@ -34,7 +33,7 @@ async function createDMG() {
 
         // Create a simple folder structure for DMG
         const appDir = path.join(DMG_TEMP, 'Sensory Shield');
-        await mkdirp(appDir);
+        fs.mkdirSync(appDir, { recursive: true });
 
         fs.copyFileSync(extZip, path.join(appDir, 'sensory-shield-extension.zip'));
 

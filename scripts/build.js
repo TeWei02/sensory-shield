@@ -8,7 +8,6 @@
 const fs = require('fs');
 const path = require('path');
 const archiver = require('archiver');
-const mkdirp = require('mkdirp');
 
 const DIR = path.dirname(__dirname);
 const DIST_DIR = path.join(DIR, 'dist');
@@ -26,8 +25,8 @@ const FILES_TO_INCLUDE = [
 async function build() {
     try {
         // Create directories
-        await mkdirp(DIST_DIR);
-        await mkdirp(BUILD_DIR);
+        fs.mkdirSync(DIST_DIR, { recursive: true });
+        fs.mkdirSync(BUILD_DIR, { recursive: true });
 
         const output = fs.createWriteStream(path.join(DIST_DIR, 'sensory-shield.zip'));
         const archive = archiver('zip', { zlib: { level: 9 } });
