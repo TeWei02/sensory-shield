@@ -1,0 +1,73 @@
+<svg width="1200" height="640" viewBox="0 0 1200 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Sensory Shield Overview</title>
+  <desc id="desc">A visual overview showing overload, brake, calm, and AI runtime paths.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F7F7FB"/>
+      <stop offset="1" stop-color="#EEF3FF"/>
+    </linearGradient>
+    <linearGradient id="green" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#3AAFA9"/>
+      <stop offset="1" stop-color="#2B7A78"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#4A90E2"/>
+      <stop offset="1" stop-color="#2666D6"/>
+    </linearGradient>
+    <linearGradient id="pink" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FF7BA3"/>
+      <stop offset="1" stop-color="#FF5C8A"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#16324F" flood-opacity="0.12"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="640" rx="40" fill="url(#bg)"/>
+
+  <text x="60" y="80" fill="#18212B" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800">Sensory Shield</text>
+  <text x="60" y="122" fill="#5C6675" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="500">Overload → Brake → Calm • Demo + AI + Local runtime</text>
+
+  <rect x="60" y="170" width="310" height="130" rx="28" fill="white" filter="url(#shadow)"/>
+  <text x="92" y="210" fill="#18212B" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Overload</text>
+  <text x="92" y="242" fill="#5C6675" font-family="Inter, Arial, sans-serif" font-size="18">Jitter, saturation, noise</text>
+  <circle cx="300" cy="235" r="34" fill="url(#pink)" opacity="0.95"/>
+  <path d="M286 235L304 217L322 235L304 253Z" fill="white" opacity="0.9"/>
+
+  <rect x="445" y="170" width="310" height="130" rx="28" fill="white" filter="url(#shadow)"/>
+  <text x="477" y="210" fill="#18212B" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Brake</text>
+  <text x="477" y="242" fill="#5C6675" font-family="Inter, Arial, sans-serif" font-size="18">Neutralize + simplify</text>
+  <circle cx="685" cy="235" r="34" fill="url(#green)" opacity="0.95"/>
+  <rect x="673" y="223" width="24" height="24" rx="6" fill="white" opacity="0.92"/>
+
+  <rect x="830" y="170" width="310" height="130" rx="28" fill="white" filter="url(#shadow)"/>
+  <text x="862" y="210" fill="#18212B" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700">Calm</text>
+  <text x="862" y="242" fill="#5C6675" font-family="Inter, Arial, sans-serif" font-size="18">Readable, low-stimulus</text>
+  <circle cx="1070" cy="235" r="34" fill="url(#blue)" opacity="0.95"/>
+  <path d="M1056 235H1084" stroke="white" stroke-width="5" stroke-linecap="round" opacity="0.94"/>
+  <path d="M1070 221V249" stroke="white" stroke-width="5" stroke-linecap="round" opacity="0.94"/>
+
+  <path d="M370 235H435" stroke="#A9B5C4" stroke-width="6" stroke-linecap="round"/>
+  <path d="M750 235H815" stroke="#A9B5C4" stroke-width="6" stroke-linecap="round"/>
+  <path d="M418 221L435 235L418 249" stroke="#A9B5C4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M798 221L815 235L798 249" stroke="#A9B5C4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <rect x="60" y="350" width="510" height="200" rx="30" fill="white" filter="url(#shadow)"/>
+  <text x="92" y="392" fill="#18212B" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">AI runtime options</text>
+  <rect x="92" y="420" width="130" height="54" rx="16" fill="#EEF7F6"/>
+  <text x="118" y="453" fill="#2B7A78" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Remote LLM</text>
+  <rect x="238" y="420" width="130" height="54" rx="16" fill="#EEF4FF"/>
+  <text x="262" y="453" fill="#2666D6" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Local host</text>
+  <rect x="384" y="420" width="130" height="54" rx="16" fill="#FFF0F4"/>
+  <text x="404" y="453" fill="#D94848" font-family="Inter, Arial, sans-serif" font-size="18" font-weight="700">Heuristic</text>
+  <text x="92" y="520" fill="#5C6675" font-family="Inter, Arial, sans-serif" font-size="18">Provider abstraction keeps the project ready for agent workflows, tools, and multi-model experiments.</text>
+
+  <rect x="615" y="350" width="525" height="200" rx="30" fill="white" filter="url(#shadow)"/>
+  <text x="647" y="392" fill="#18212B" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="700">Public site</text>
+  <text x="647" y="430" fill="#5C6675" font-family="Inter, Arial, sans-serif" font-size="18">Demo page • Whitepaper • Downloads</text>
+  <text x="647" y="470" fill="#5C6675" font-family="Inter, Arial, sans-serif" font-size="18">Designed for portfolios, interviews, and live walkthroughs.</text>
+  <rect x="647" y="495" width="210" height="36" rx="18" fill="url(#green)"/>
+  <text x="674" y="519" fill="white" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Interactive showcase</text>
+  <rect x="871" y="495" width="238" height="36" rx="18" fill="url(#blue)"/>
+  <text x="900" y="519" fill="white" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700">Installer bundles included</text>
+</svg>
