@@ -1,0 +1,25 @@
+/* styles.css */
+:root{
+  --bg: #f7f7f8;
+  --card: #fff;
+  --text: #222;
+  --accent: #2b7a78;
+  --accent-2: #3aafa9;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,'Noto Sans TC',sans-serif;background:var(--bg);color:var(--text)}
+
+.wrap{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px}
+.title{font-size:28px;margin:0 0 6px;text-align:center}
+.subtitle{margin:0 0 20px;color:#555;text-align:center}
+
+.buttons{display:flex;gap:20px;flex-wrap:wrap;justify-content:center}
+.big-btn{display:inline-flex;align-items:center;justify-content:center;padding:20px 36px;border-radius:14px;text-decoration:none;color:#fff;font-weight:700;font-size:18px;box-shadow:0 8px 24px rgba(0,0,0,0.08);min-width:220px}
+.big-btn.mac{background:linear-gradient(135deg,var(--accent-2),var(--accent))}
+.big-btn.win{background:linear-gradient(135deg,#4a90e2,#2666d6)}
+
+.big-btn:active{transform:translateY(1px)}
+.note{margin-top:18px;color:#666;font-size:14px;text-align:center;max-width:680px}
+
+@media (max-width:520px){.big-btn{width:100%;min-width:0;padding:16px 20px;font-size:16px;border-radius:12px}}
