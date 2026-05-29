@@ -1,0 +1,33 @@
+{
+    "name": "sensory-shield",
+    "version": "0.1.0",
+    "description": "Neutralize distracting web content for neurodiverse users.",
+    "author": "Sensory Shield Team",
+    "license": "MIT",
+    "main": "background.js",
+    "scripts": {
+        "build": "node scripts/build.js",
+        "pack:dmg": "node scripts/pack-dmg.js",
+        "pack:exe": "node scripts/pack-exe.js",
+        "pack:linux": "node scripts/pack-linux.js",
+        "dist": "npm run build && npm run pack:dmg && npm run pack:exe && npm run pack:linux",
+        "dev": "echo 'Load extension manually from chrome://extensions/'",
+        "test": "echo 'No tests configured yet'"
+    },
+    "devDependencies": {
+        "archiver": "^6.0.1",
+        "electron": "^27.0.0",
+        "electron-builder": "^24.6.4",
+        "mkdirp": "^3.0.1"
+    },
+    "keywords": [
+        "chrome-extension",
+        "neurodiversity",
+        "accessibility",
+        "web-reading"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/yourusername/sensory-shield.git"
+    }
+}
