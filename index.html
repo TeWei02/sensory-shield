@@ -1,136 +1,577 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-Hant" data-theme="light">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Sensory Shield: a visual browser-extension demo with AI, local runtime support, and downloadable installer bundles."
-    />
-    <title>Sensory Shield — Visual Demo</title>
+    <meta name="description" content="Sensory Shield — 神經多樣性友善瀏覽器擴充功能。讓令人不知所措的網頁變得平靜、易讀。" />
+    <title>Sensory Shield — 感官煞車</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <header class="nav">
+
+    <!-- ── Scroll progress bar ── -->
+    <div id="progressBar" aria-hidden="true"></div>
+
+    <!-- ── Navigation ── -->
+    <header class="nav" id="nav">
       <div class="brand">
-        <div class="brand-mark">SS</div>
-        <div>
-          <p class="eyebrow">Browser extension</p>
-          <h1>Sensory Shield</h1>
-        </div>
+        <div class="brand-mark">🛡️</div>
+        <span class="brand-name">Sensory Shield</span>
       </div>
-      <nav class="nav-links">
+      <nav class="nav-links" aria-label="主選單">
         <a href="#demo">Demo</a>
-        <a href="#ai">AI</a>
-        <a href="#download">Download</a>
-        <a href="site/whitepaper.html">Whitepaper</a>
+        <a href="#trylive">試用</a>
+        <a href="#how">原理</a>
+        <a href="#features">功能</a>
+        <a href="#install">安裝</a>
       </nav>
+      <button class="theme-toggle" id="themeToggle" aria-label="切換深色模式">🌙</button>
     </header>
 
-    <main class="page">
-      <section class="hero">
-        <div class="hero-copy">
-          <span class="pill">Overload → Brake → Calm</span>
-          <h2>Make overwhelming web pages feel calm, readable, and humane.</h2>
-          <p>
-            Sensory Shield is a browser extension for neurodiverse users. It includes a live demo, AI runtime options,
-            and installer bundles that users can actually use.
+    <main>
+
+      <!-- ═══════════════════════════════════════════
+           HERO
+      ═══════════════════════════════════════════ -->
+      <section class="hero section-pad" id="hero">
+        <div class="hero-copy fade-up">
+          <span class="pill">🧠 為神經多樣性設計</span>
+          <h1>讓網頁<br /><span class="gradient-text">平靜下來</span></h1>
+          <p class="hero-desc">
+            Sensory Shield 是 Chrome/Edge 瀏覽器擴充功能，一鍵隱藏廣告、動畫、刺激元素，
+            再以 AI 或內建規則將文章改寫為清晰條列，讓過載的網頁變得平和可讀。
           </p>
-
           <div class="hero-actions">
-            <a class="button primary" href="#demo">Try the Demo</a>
-            <a class="button secondary" href="#download">Get the Installer</a>
+            <a class="btn btn-primary" href="#trylive">🚀 立即試用</a>
+            <a class="btn btn-ghost" href="https://github.com/TeWei02/sensory-shield" target="_blank" rel="noopener">⭐ GitHub</a>
           </div>
-
-          <ul class="hero-stats">
-            <li><strong>MV3</strong><span>real browser extension</span></li>
-            <li><strong>3</strong><span>runtime modes</span></li>
-            <li><strong>1</strong><span>clear product story</span></li>
-          </ul>
+          <div class="hero-badges">
+            <span class="badge">✅ Manifest V3</span>
+            <span class="badge">✅ 離線可用</span>
+            <span class="badge">✅ 無追蹤</span>
+            <span class="badge">✅ 免費開源</span>
+          </div>
         </div>
 
-        <div class="hero-visual">
-          <img src="assets/overview.svg" alt="Sensory Shield visual overview" />
+        <div class="hero-visual fade-up delay-1">
+          <div class="browser-mockup">
+            <div class="browser-bar">
+              <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+              <span class="browser-url">example.com/article</span>
+            </div>
+            <div class="browser-body" id="heroBrowserBody">
+              <div class="before-state" id="heroBeforeState">
+                <div class="fake-ad">🔥 限時優惠！立即購買！！</div>
+                <div class="fake-banner">⚡️ 震驚！你絕對不知道的秘密！！！</div>
+                <div class="fake-text dense">
+                  <div class="fake-line w90"></div>
+                  <div class="fake-line w70"></div>
+                  <div class="fake-line w85"></div>
+                  <div class="fake-line w60"></div>
+                </div>
+                <div class="fake-ad side">📣 廣告 — 點我！</div>
+                <div class="fake-img-placeholder"></div>
+              </div>
+              <div class="after-state hidden" id="heroAfterState">
+                <div class="calm-badge">🛡️ Sensory Shield 已啟動</div>
+                <h4 class="calm-title">文章摘要</h4>
+                <ul class="calm-bullets">
+                  <li>研究人員發現新型材料具備高導電性</li>
+                  <li>此材料在室溫下即可運作，無需特殊冷卻</li>
+                  <li>預計三年內進入量產階段</li>
+                  <li>可能改變電子元件的製造方式</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <button class="mockup-trigger" id="mockupTrigger">
+            <span id="mockupTriggerText">▶ 模擬啟動感官煞車</span>
+          </button>
         </div>
       </section>
 
-      <section class="section" id="demo">
-        <div class="section-heading">
-          <span class="pill">Live demo</span>
-          <h3>Interactive contrast demo</h3>
+      <!-- ═══════════════════════════════════════════
+           STATS
+      ═══════════════════════════════════════════ -->
+      <section class="stats-row section-pad" id="stats">
+        <div class="stat-card fade-up">
+          <span class="stat-num" data-target="100">0</span><span class="stat-unit">%</span>
+          <span class="stat-label">隱私保護<br />No server</span>
+        </div>
+        <div class="stat-card fade-up delay-1">
+          <span class="stat-num" data-target="6">0</span><span class="stat-unit">+</span>
+          <span class="stat-label">支援 AI 服務<br />Free tiers</span>
+        </div>
+        <div class="stat-card fade-up delay-2">
+          <span class="stat-num" data-target="1">0</span><span class="stat-unit">鍵</span>
+          <span class="stat-label">啟動感官煞車<br />One click</span>
+        </div>
+        <div class="stat-card fade-up delay-3">
+          <span class="stat-num" data-target="0">0</span><span class="stat-unit">s</span>
+          <span class="stat-label">離線啟動延遲<br />Offline first</span>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           INTERACTIVE DEMO — calm vs overload
+      ═══════════════════════════════════════════ -->
+      <section class="section section-pad" id="demo">
+        <div class="section-head fade-up">
+          <span class="pill">🎮 互動 Demo</span>
+          <h2>感受前後差異</h2>
+          <p class="section-desc">點擊按鈕，體驗感官過載 vs 平靜模式的視覺差異</p>
         </div>
 
-        <div class="demo-shell" id="demoShell">
-          <div class="demo-controls">
-            <button class="mode-btn active" data-mode="calm">Calm</button>
-            <button class="mode-btn danger" data-mode="overload">Overload</button>
-            <button class="mode-btn" data-mode="reset">Reset</button>
+        <div class="demo-shell fade-up" id="demoShell">
+          <div class="demo-tabs">
+            <button class="demo-tab active" data-mode="calm">😌 平靜模式</button>
+            <button class="demo-tab" data-mode="overload">😵 感官過載</button>
+            <div class="demo-tab-indicator"></div>
           </div>
 
-          <div class="demo-preview" id="demoPreview">
-            <p class="demo-label">Example article</p>
-            <h4>When the feed moves too fast, the brain needs a pause.</h4>
-            <p>
-              Sensory Shield turns messy pages into a readable, quiet, and structured interface so users can grasp the
-              key points faster.
-            </p>
-            <div class="tag-row">
-              <span>neutral language</span>
-              <span>bullet summary</span>
-              <span>low stimulation</span>
+          <div class="demo-stage" id="demoStage">
+
+            <!-- CALM -->
+            <div class="demo-pane active" id="panecalm">
+              <div class="demo-browser">
+                <div class="demo-browser-bar">
+                  <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                  <span class="demo-url-pill">🛡️ Sensory Shield 啟動中</span>
+                </div>
+                <div class="demo-content calm-content">
+                  <p class="content-eyebrow">AI 摘要 · 中立語氣</p>
+                  <h3>科學家發現室溫超導材料</h3>
+                  <ul class="content-bullets">
+                    <li>研究團隊在實驗室條件下驗證了材料的超導特性</li>
+                    <li>與現有技術相比，所需溫度大幅降低</li>
+                    <li>商業化時間表尚待進一步研究確認</li>
+                    <li>此發現已發表於同行評審期刊</li>
+                  </ul>
+                  <div class="content-tags">
+                    <span>中立語氣</span><span>條列摘要</span><span>低刺激</span>
+                  </div>
+                </div>
+              </div>
+              <p class="demo-note">✅ 廣告已移除 · 動畫已停止 · 文字已重整</p>
+            </div>
+
+            <!-- OVERLOAD -->
+            <div class="demo-pane" id="paneoverload">
+              <div class="demo-browser overload-browser">
+                <div class="demo-browser-bar overload-bar">
+                  <span class="dot red"></span><span class="dot yellow"></span><span class="dot green"></span>
+                  <span class="overload-url">news-clickbait.xyz/shocking-secret</span>
+                </div>
+                <div class="demo-content overload-content">
+                  <div class="overload-banner">🔥🔥 震驚！限時！你不知道的秘密！立即點擊！🔥🔥</div>
+                  <div class="overload-ticker">📣 快訊 · 限時特賣 · 今日最熱 · 不看後悔 · 📣 快訊 · 限時特賣 · 今日最熱 · 不看後悔</div>
+                  <div class="overload-main">
+                    <div class="overload-text-col">
+                      <h3 class="overload-title">震驚！！科學家發現你絕對不敢相信的秘密！！！</h3>
+                      <p class="overload-body">這項驚天動地的發現將徹底改變你的一切！你的生活再也不一樣！立即分享給所有人！！！！這是史上最重要的發現！！</p>
+                    </div>
+                    <div class="overload-ads">
+                      <div class="fake-ad-box blink">廣告<br/>點我！</div>
+                      <div class="fake-ad-box pulse">限量！<br/>搶購！</div>
+                    </div>
+                  </div>
+                  <div class="overload-popup">❗ 您是本日第 1000 名訪客！領取獎品 →</div>
+                </div>
+              </div>
+              <p class="demo-note">⚠️ 這就是感官過載的感受 — Sensory Shield 可以消除這一切</p>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           TRY IT LIVE — in-browser heuristic
+      ═══════════════════════════════════════════ -->
+      <section class="section section-pad" id="trylive">
+        <div class="section-head fade-up">
+          <span class="pill">⚡ 立即體驗</span>
+          <h2>貼上任意文字，即刻中性化</h2>
+          <p class="section-desc">不需要 API Key，直接在瀏覽器內使用內建規則式引擎處理</p>
+        </div>
+
+        <div class="trylive-shell fade-up">
+          <div class="trylive-input-col">
+            <label class="tl-label" for="tlInput">📝 原始文字（貼上任意新聞、文章）</label>
+            <textarea
+              id="tlInput"
+              class="tl-textarea"
+              placeholder="貼上任意文字，例如：震驚！科學家發現你絕對不知道的秘密！限時優惠！立即購買！你的生活將因此改變！！！"
+              rows="10"
+            ></textarea>
+            <div class="tl-actions">
+              <button class="btn btn-primary" id="tlRunBtn">🛡️ 立即中性化</button>
+              <button class="btn btn-ghost" id="tlSampleBtn">📋 載入範例文字</button>
+              <button class="btn btn-ghost" id="tlClearBtn">🗑️ 清除</button>
+            </div>
+          </div>
+
+          <div class="trylive-output-col">
+            <label class="tl-label">✨ 中性化結果</label>
+            <div class="tl-output" id="tlOutput">
+              <div class="tl-placeholder">
+                <span>🛡️</span>
+                <p>結果將顯示在這裡</p>
+              </div>
+            </div>
+            <div class="tl-meta" id="tlMeta" hidden>
+              <span id="tlSentenceCount"></span>
+              <span id="tlRemovedCount"></span>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="section grid-3" id="ai">
-        <div class="card">
-          <span class="card-icon">⚙</span>
-          <h3>Remote LLM</h3>
-          <p>OpenAI-compatible endpoints for cloud-based summarization and rewriting.</p>
+      <!-- ═══════════════════════════════════════════
+           HOW IT WORKS
+      ═══════════════════════════════════════════ -->
+      <section class="section section-pad" id="how">
+        <div class="section-head fade-up">
+          <span class="pill">🔍 運作原理</span>
+          <h2>三步驟，讓頁面平靜</h2>
         </div>
-        <div class="card">
-          <span class="card-icon">🏠</span>
-          <h3>Local runtime</h3>
-          <p>localhost models for privacy-first or offline demos.</p>
-        </div>
-        <div class="card">
-          <span class="card-icon">🧪</span>
-          <h3>Heuristic fallback</h3>
-          <p>A simple fallback mode so the demo still works even without an API key.</p>
-        </div>
-      </section>
 
-      <section class="section split">
-        <div class="card" id="download">
-          <span class="pill">Downloads</span>
-          <h3>Installer bundles</h3>
-          <p>These are browser-extension bundles, not desktop apps. Download, unpack, and load them in Chrome or Edge.</p>
-
-          <div class="download-grid">
-            <a class="button download mac" href="site/downloads/sensory-shield-0.1.0.dmg" download>Install on Mac</a>
-            <a class="button download win" href="site/downloads/sensory-shield-0.1.0-windows.zip" download>Install on Windows</a>
-            <a class="button download linux" href="site/downloads/sensory-shield-0.1.0-linux.tar.gz" download>Install on Linux</a>
+        <div class="steps-flow fade-up">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-icon">🙈</div>
+            <h3>隱藏刺激元素</h3>
+            <p>自動移除圖片、影片、廣告、浮動元素、動畫，消除視覺雜訊</p>
+            <div class="step-code">
+              <code>img, video, [class*="ad"], position:fixed → display:none</code>
+            </div>
+          </div>
+          <div class="step-arrow">→</div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-icon">📖</div>
+            <h3>提取核心內容</h3>
+            <p>優先擷取 &lt;article&gt;、&lt;main&gt; 標籤，再退而求其次取段落文字</p>
+            <div class="step-code">
+              <code>article → main → p.length&gt;20 → body</code>
+            </div>
+          </div>
+          <div class="step-arrow">→</div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-icon">✨</div>
+            <h3>AI 中性化重整</h3>
+            <p>LLM 或內建規則消除煽動語言，改寫為客觀條列，套用舒適排版</p>
+            <div class="step-code">
+              <code>LLM rewrite → bullet list → calm CSS</code>
+            </div>
           </div>
         </div>
 
-        <div class="card">
-          <span class="pill">How it works</span>
-          <h3>Demo + AI + accessibility</h3>
-          <ol class="steps">
-            <li>Trigger calm or overload mode from the demo.</li>
-            <li>Use the extension to neutralize real pages.</li>
-            <li>Pick remote, local, or heuristic AI runtime.</li>
-          </ol>
+        <!-- Runtime selector -->
+        <div class="runtime-selector fade-up">
+          <div class="section-head" style="margin-top:48px">
+            <span class="pill">⚙️ AI 執行模式</span>
+            <h2>三種 AI 執行模式，任你選</h2>
+          </div>
+          <div class="runtime-tabs">
+            <button class="runtime-tab active" data-rt="cloud">☁️ 雲端 LLM</button>
+            <button class="runtime-tab" data-rt="local">🏠 本地模型</button>
+            <button class="runtime-tab" data-rt="heuristic">⚡ 規則式（免 API）</button>
+          </div>
+          <div class="runtime-panels">
+            <div class="runtime-panel active" id="rt-cloud">
+              <div class="rt-info">
+                <h4>雲端 LLM — OpenAI-compatible</h4>
+                <p>使用任何相容 OpenAI API 的服務，包括 Groq、OpenRouter、Together AI、Mistral、Cohere 等</p>
+                <ul>
+                  <li>✅ 最佳文字品質</li>
+                  <li>✅ 支援 6+ 免費/低費 provider</li>
+                  <li>⚠️ 需要 API Key 與網路</li>
+                </ul>
+                <div class="rt-code-block">
+                  <pre>// popup 設定頁面填入：
+API Key:      sk-xxxx
+Model:        gpt-4o-mini (或 llama-3.1-8b 等)
+Base URL:     https://api.groq.com (或其他)</pre>
+                </div>
+              </div>
+            </div>
+            <div class="runtime-panel" id="rt-local">
+              <div class="rt-info">
+                <h4>本地模型 — Ollama / LM Studio</h4>
+                <p>在本機執行 LLM，完全離線，資料不離開你的電腦</p>
+                <ul>
+                  <li>✅ 完全隱私，零資料洩漏</li>
+                  <li>✅ 無 API 費用</li>
+                  <li>⚠️ 需要安裝 Ollama 或 LM Studio</li>
+                </ul>
+                <div class="rt-code-block">
+                  <pre># 啟動 Ollama：
+ollama serve
+ollama run llama3.2
+
+# Base URL 設定為：
+http://localhost:11434</pre>
+                </div>
+              </div>
+            </div>
+            <div class="runtime-panel" id="rt-heuristic">
+              <div class="rt-info">
+                <h4>規則式引擎 — 零設定，立即可用</h4>
+                <p>不需任何 API Key，擴充功能內建規則引擎，離線即可運作</p>
+                <ul>
+                  <li>✅ 零設定，開箱即用</li>
+                  <li>✅ 完全離線，無網路需求</li>
+                  <li>✅ 即時處理，無 30 秒超時</li>
+                  <li>ℹ️ 品質略低於 LLM 模式</li>
+                </ul>
+                <div class="rt-code-block">
+                  <pre>// 自動啟動條件：
+if (!openaiApiKey) {
+  return heuristicNeutralize(text);
+}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
+
+      <!-- ═══════════════════════════════════════════
+           FEATURES
+      ═══════════════════════════════════════════ -->
+      <section class="section section-pad" id="features">
+        <div class="section-head fade-up">
+          <span class="pill">🌟 功能特色</span>
+          <h2>為神經多樣性設計的每一個細節</h2>
+        </div>
+
+        <div class="features-grid">
+          <div class="feature-card fade-up">
+            <div class="fc-icon">🙈</div>
+            <h3>視覺雜訊清除</h3>
+            <p>自動隱藏圖片、影片、廣告、彈窗、浮動元素、動畫效果</p>
+          </div>
+          <div class="feature-card fade-up delay-1">
+            <div class="fc-icon">🤖</div>
+            <h3>AI 文字中性化</h3>
+            <p>消除煽動性語言、感嘆號、強烈情緒用詞，改寫為客觀中立語氣</p>
+          </div>
+          <div class="feature-card fade-up delay-2">
+            <div class="fc-icon">📋</div>
+            <h3>條列式摘要</h3>
+            <p>將長篇文章自動整理為易讀的重點條列，降低認知負荷</p>
+          </div>
+          <div class="feature-card fade-up delay-3">
+            <div class="fc-icon">⚡</div>
+            <h3>離線規則式引擎</h3>
+            <p>無需 API Key，內建規則式引擎立即可用，完全不依賴網路</p>
+          </div>
+          <div class="feature-card fade-up">
+            <div class="fc-icon">🔒</div>
+            <h3>隱私優先</h3>
+            <p>所有處理在本機完成，無伺服器，API Key 存於本地 storage</p>
+          </div>
+          <div class="feature-card fade-up delay-1">
+            <div class="fc-icon">⏱️</div>
+            <h3>30 秒超時保護</h3>
+            <p>API 請求超過 30 秒自動中斷，附清楚錯誤說明，不讓頁面卡住</p>
+          </div>
+          <div class="feature-card fade-up delay-2">
+            <div class="fc-icon">🎨</div>
+            <h3>舒適排版套用</h3>
+            <p>自動套用莫蘭迪色調、1.8 行距、800px 寬度，打造最舒適閱讀體驗</p>
+          </div>
+          <div class="feature-card fade-up delay-3">
+            <div class="fc-icon">🌐</div>
+            <h3>多 AI Provider</h3>
+            <p>支援 OpenAI、Groq、OpenRouter、Together AI、Mistral、Cohere 等</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           BEFORE / AFTER SLIDER
+      ═══════════════════════════════════════════ -->
+      <section class="section section-pad" id="beforeafter">
+        <div class="section-head fade-up">
+          <span class="pill">🔄 Before / After</span>
+          <h2>拖曳滑桿，感受差異</h2>
+          <p class="section-desc">左邊是原始混亂頁面，右邊是 Sensory Shield 處理後的結果</p>
+        </div>
+
+        <div class="ba-container fade-up" id="baContainer">
+          <div class="ba-before">
+            <div class="ba-label ba-label-left">😵 處理前</div>
+            <div class="ba-page before-page">
+              <div class="bp-banner">⚡ 震驚！你必須知道的秘密！！！立即分享！！</div>
+              <div class="bp-header">
+                <div class="bp-logo">NEWS</div>
+                <div class="bp-nav">首頁 | 娛樂 | 財經 | 科技</div>
+              </div>
+              <div class="bp-main">
+                <div class="bp-content">
+                  <div class="bp-title">震驚！科學家發現驚天秘密，你絕對不知道！！！</div>
+                  <div class="bp-body">
+                    這是史上最重要的發現！！你的生活將因此徹底改變！不看後悔！！！
+                    快轉發給所有朋友！這絕對是你今年最重要的一個決定！！！！
+                  </div>
+                </div>
+                <div class="bp-sidebar">
+                  <div class="bp-ad blink">廣告<br/>點我！<br/>😱</div>
+                  <div class="bp-ad pulse">限量！<br/>搶購！</div>
+                </div>
+              </div>
+              <div class="bp-popup">🎁 恭喜你是第 1000 名訪客！</div>
+            </div>
+          </div>
+
+          <div class="ba-slider-handle" id="baHandle" role="slider" aria-label="前後對比滑桿" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">
+            <div class="ba-slider-line"></div>
+            <div class="ba-slider-btn">↔</div>
+          </div>
+
+          <div class="ba-after">
+            <div class="ba-label ba-label-right">😌 處理後</div>
+            <div class="ba-page after-page">
+              <div class="ap-shield-bar">🛡️ Sensory Shield 已啟動</div>
+              <div class="ap-title">科學新發現</div>
+              <ul class="ap-bullets">
+                <li>研究人員確認材料具備超導特性</li>
+                <li>實驗在室溫條件下進行並獲得驗證</li>
+                <li>研究成果已通過同行評審</li>
+                <li>商業化時程仍需進一步研究</li>
+              </ul>
+              <div class="ap-tags">
+                <span>中立語氣</span>
+                <span>條列摘要</span>
+                <span>低刺激</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           INSTALL
+      ═══════════════════════════════════════════ -->
+      <section class="section section-pad" id="install">
+        <div class="section-head fade-up">
+          <span class="pill">📦 安裝</span>
+          <h2>三步驟，完成安裝</h2>
+        </div>
+
+        <div class="install-steps fade-up">
+          <div class="install-step">
+            <div class="is-num">①</div>
+            <h4>下載 ZIP</h4>
+            <p>從下方下載對應平台的安裝包</p>
+          </div>
+          <div class="is-arrow">→</div>
+          <div class="install-step">
+            <div class="is-num">②</div>
+            <h4>開啟擴充功能</h4>
+            <p>Chrome → <code>chrome://extensions</code> → 開啟開發者模式</p>
+          </div>
+          <div class="is-arrow">→</div>
+          <div class="install-step">
+            <div class="is-num">③</div>
+            <h4>載入解壓縮的擴充功能</h4>
+            <p>選擇解壓縮後的資料夾，完成！</p>
+          </div>
+        </div>
+
+        <div class="download-grid fade-up">
+          <a class="dl-btn mac" href="site/downloads/sensory-shield-0.1.0.dmg" download>
+            <span class="dl-icon">🍎</span>
+            <span class="dl-text">
+              <strong>macOS</strong>
+              <small>sensory-shield-0.1.0.dmg</small>
+            </span>
+          </a>
+          <a class="dl-btn win" href="site/downloads/sensory-shield-0.1.0-windows.zip" download>
+            <span class="dl-icon">🪟</span>
+            <span class="dl-text">
+              <strong>Windows</strong>
+              <small>sensory-shield-0.1.0-windows.zip</small>
+            </span>
+          </a>
+          <a class="dl-btn linux" href="site/downloads/sensory-shield-0.1.0-linux.tar.gz" download>
+            <span class="dl-icon">🐧</span>
+            <span class="dl-text">
+              <strong>Linux</strong>
+              <small>sensory-shield-0.1.0-linux.tar.gz</small>
+            </span>
+          </a>
+          <a class="dl-btn source" href="https://github.com/TeWei02/sensory-shield" target="_blank" rel="noopener">
+            <span class="dl-icon">📦</span>
+            <span class="dl-text">
+              <strong>原始碼</strong>
+              <small>Clone from GitHub</small>
+            </span>
+          </a>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════
+           FAQ
+      ═══════════════════════════════════════════ -->
+      <section class="section section-pad" id="faq">
+        <div class="section-head fade-up">
+          <span class="pill">❓ 常見問題</span>
+          <h2>FAQ</h2>
+        </div>
+        <div class="faq-list fade-up">
+          <details class="faq-item">
+            <summary>不設定 API Key 也能用嗎？</summary>
+            <p>可以！留空 API Key，擴充功能會自動使用內建規則式引擎，完全離線運作，不需要任何網路連線。</p>
+          </details>
+          <details class="faq-item">
+            <summary>我的資料會被送到哪裡？</summary>
+            <p>文字只會被送到你自己設定的 LLM 服務（例如 Groq 或本地 Ollama）。若使用離線規則式模式，資料完全留在本機，不會離開你的電腦。</p>
+          </details>
+          <details class="faq-item">
+            <summary>支援哪些瀏覽器？</summary>
+            <p>目前支援 Chrome 和 Edge（Manifest V3）。Firefox 和 Safari 支援列於規劃中。</p>
+          </details>
+          <details class="faq-item">
+            <summary>免費的 AI API 有哪些可以用？</summary>
+            <p>Groq（免費額度）、OpenRouter（多模型）、Together AI、Mistral（免費層）、Cohere 等都提供免費額度，足夠日常使用。</p>
+          </details>
+          <details class="faq-item">
+            <summary>處理後頁面能還原嗎？</summary>
+            <p>目前重整後需重新整理頁面（F5 / Cmd+R）才能還原原始頁面。未來版本計畫加入一鍵還原功能。</p>
+          </details>
+        </div>
+      </section>
+
     </main>
+
+    <!-- ═══════════════════════════════════════════
+         FOOTER
+    ═══════════════════════════════════════════ -->
+    <footer class="footer">
+      <div class="footer-inner">
+        <div class="footer-brand">
+          <span class="brand-mark small">🛡️</span>
+          <span>Sensory Shield</span>
+        </div>
+        <p class="footer-desc">為神經多樣性使用者設計的瀏覽器擴充功能。開源、免費、尊重隱私。</p>
+        <div class="footer-links">
+          <a href="https://github.com/TeWei02/sensory-shield" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://github.com/TeWei02/sensory-shield/issues" target="_blank" rel="noopener">回報問題</a>
+          <a href="https://github.com/TeWei02/sensory-shield/blob/master/README.md" target="_blank" rel="noopener">README</a>
+        </div>
+        <p class="footer-copy">MIT License · Made with ❤️ for neurodiverse users</p>
+      </div>
+    </footer>
+
+    <!-- Back to top -->
+    <button class="back-top" id="backTop" aria-label="回到頂部">↑</button>
 
     <script src="./demo.js"></script>
   </body>
