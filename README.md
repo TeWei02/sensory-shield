@@ -146,10 +146,7 @@ sensory-shield/
 ├── assets/
 │   └── overview.svg     # Architecture diagram
 └── scripts/
-    ├── build.js         # Package extension to .zip
-    ├── pack-dmg.js      # macOS bundle
-    ├── pack-exe.js      # Windows bundle
-    └── pack-linux.js    # Linux bundle
+    └── build.js         # Package extension to .zip
 ```
 
 ---
@@ -169,14 +166,6 @@ Load in Chrome/Edge:
 1. Go to `chrome://extensions`
 2. Enable **Developer mode**
 3. Click **Load unpacked** → select this folder
-
-### Packaged Downloads
-
-```bash
-npm run pack:dmg    # macOS bundle
-npm run pack:exe    # Windows bundle
-npm run pack:linux  # Linux bundle
-```
 
 ### Configure AI
 
