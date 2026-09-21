@@ -8,16 +8,47 @@
   </head>
   <body>
     <main class="container">
-      <input
-        type="password"
-        id="apiKeyInput"
-        placeholder="貼上 OpenAI API Key"
-      />
-      <button id="saveKeyBtn" class="primary">儲存 Key</button>
-      <button id="neutralizeBtn" class="primary">
-        啟動感官煞車 (Neutralize Page)
-      </button>
-      <p id="statusText" aria-live="polite"></p>
+      <header class="head">
+        <div class="brand-mark" aria-hidden="true">SS</div>
+        <div>
+          <h1>Sensory Shield</h1>
+          <p class="muted" id="modeText">檢查設定中…</p>
+        </div>
+      </header>
+
+      <button id="neutralizeBtn" class="primary" type="button">啟動感官煞車</button>
+
+      <details class="advanced">
+        <summary>AI 設定（可選）</summary>
+
+        <label class="field">
+          <span>API Key</span>
+          <input id="apiKeyInput" type="password" autocomplete="off" spellcheck="false" placeholder="sk-..." />
+        </label>
+
+        <label class="field">
+          <span>模型</span>
+          <input id="modelInput" type="text" autocomplete="off" spellcheck="false" placeholder="gpt-4o-mini" />
+        </label>
+
+        <label class="field">
+          <span>API Base URL</span>
+          <input id="baseUrlInput" type="text" autocomplete="off" spellcheck="false" placeholder="https://api.openai.com" />
+        </label>
+
+        <div class="row">
+          <button id="saveKeyBtn" class="secondary" type="button">儲存</button>
+          <button id="clearKeyBtn" class="ghost" type="button">清除</button>
+        </div>
+
+        <p class="hint">
+          未設定 API Key 時，擴充功能改用內建規則模式：離線處理、不連線、不需金鑰。金鑰僅儲存於
+          chrome.storage.sync。
+        </p>
+      </details>
+
+      <p id="statusText" class="status" role="status" aria-live="polite"></p>
+      <p class="version">v1.0.0</p>
     </main>
 
     <script src="popup.js" type="module"></script>

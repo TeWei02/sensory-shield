@@ -2,18 +2,34 @@ name: CI
 
 on:
   push:
-    branches: [main, master]
+    branches: [main]
   pull_request:
-    branches: [main, master]
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  lint:
+  build-and-verify:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 22
-      - run: npm ci || npm install
-      - run: npx eslint . --ext .js,.ts,.tsx || true
-      - run: npx prettier --check . || true
+          python-version: '3.12'
+
+      - name: Install Pillow (icon regeneration only)
+        run: python3 -m pip install --quiet --disable-pip-version-check pillow
+
+      - name: Build package
+        run: python3 scripts/build_zip.py
+
+      - name: Verify package
+        run: python3 scripts/verify_package.py
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sensory-shield-package
+          path: dist/*.zip
+          if-no-files-found: error

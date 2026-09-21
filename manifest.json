@@ -1,16 +1,23 @@
 {
     "manifest_version": 3,
     "name": "Sensory Shield",
-    "version": "0.1.0",
-    "description": "Neutralize distracting web content for neurodiverse users.",
-    "permissions": [
-        "activeTab",
-        "scripting",
-        "storage"
-    ],
+    "version": "1.0.0",
+    "description": "Turns overwhelming web pages into a calm, low-stimulation reading view with neutral wording and short bullet points.",
+    "icons": {
+        "16": "icons/icon16.png",
+        "32": "icons/icon32.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    },
     "action": {
         "default_title": "Sensory Shield",
-        "default_popup": "popup.html"
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icons/icon16.png",
+            "32": "icons/icon32.png",
+            "48": "icons/icon48.png",
+            "128": "icons/icon128.png"
+        }
     },
     "background": {
         "service_worker": "background.js"
@@ -26,7 +33,14 @@
             "run_at": "document_idle"
         }
     ],
+    "permissions": [
+        "activeTab",
+        "scripting",
+        "storage"
+    ],
     "host_permissions": [
         "<all_urls>"
-    ]
+    ],
+    "minimum_chrome_version": "114",
+    "homepage_url": "https://tewei02.github.io/sensory-shield/"
 }

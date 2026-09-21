@@ -1,33 +1,33 @@
 {
-    "name": "sensory-shield",
-    "version": "0.1.0",
-    "description": "Neutralize distracting web content for neurodiverse users.",
-    "author": "Sensory Shield Team",
-    "license": "MIT",
-    "main": "background.js",
-    "scripts": {
-        "build": "node scripts/build.js",
-        "dist": "node scripts/build.js",
-        "pack:dmg": "node scripts/pack-dmg.js",
-        "pack:exe": "node scripts/pack-exe.js",
-        "pack:linux": "node scripts/pack-linux.js",
-        "dev": "echo 'Load extension manually from chrome://extensions/'",
-        "test": "echo 'No tests configured yet'"
-    },
-    "devDependencies": {
-        "archiver": "^6.0.1",
-        "electron": "^27.0.0",
-        "electron-builder": "^24.6.4",
-        "mkdirp": "^3.0.1"
-    },
-    "keywords": [
-        "chrome-extension",
-        "neurodiversity",
-        "accessibility",
-        "web-reading"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/yourusername/sensory-shield.git"
-    }
+  "name": "sensory-shield",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Manifest V3 browser extension that turns overwhelming web pages into a calm, low-stimulation reading view.",
+  "license": "MIT",
+  "author": "Te-Wei Ko",
+  "homepage": "https://tewei02.github.io/sensory-shield/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TeWei02/sensory-shield.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TeWei02/sensory-shield/issues"
+  },
+  "keywords": [
+    "browser-extension",
+    "manifest-v3",
+    "accessibility",
+    "reading-comfort",
+    "content-neutralization"
+  ],
+  "scripts": {
+    "build": "python3 scripts/build_zip.py",
+    "verify": "python3 scripts/verify_package.py",
+    "icons": "python3 scripts/make_icons.py"
+  },
+  "engines": {
+    "python": ">=3.9"
+  },
+  "dependencies": {},
+  "devDependencies": {}
 }
