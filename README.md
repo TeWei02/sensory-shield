@@ -2,7 +2,7 @@
 
 > A Manifest V3 browser extension that turns overwhelming pages into a calm, low-stimulation reading view.
 
-[![Version](https://img.shields.io/badge/version-1.0.0-2563eb.svg)](#)
+[![Version](https://img.shields.io/badge/version-1.0.1-2563eb.svg)](#)
 [![Manifest V3](https://img.shields.io/badge/manifest-v3-7c3aed.svg)](#)
 [![Platform](https://img.shields.io/badge/platform-Chrome%20%7C%20Edge-1f7a4d.svg)](#)
 [![License](https://img.shields.io/badge/license-MIT-c2410c.svg)](LICENSE)
@@ -25,6 +25,25 @@ Sensory Shield is a reading-comfort tool for the browser. On a page you are alre
 The extension is designed around **semantic computing** ideas: reducing perceptual load, detecting affective or
 hyperbolic wording in page copy, and re-expressing the same information in quieter language.
 
+## Who it is for
+
+Sensory Shield is for readers who have already decided to read something and are fighting the page for it:
+
+- people who read long articles, documentation or forum threads on screen every day;
+- readers who are repeatedly interrupted by autoplaying media, sticky share rails, subscription modals and ad slots;
+- anyone who wants to lower the emotional volume of clickbait-style headlines and copy;
+- users who prefer tools that work offline, without an account and without telemetry;
+- readers with ADHD or sensory sensitivity who find multi-column, animated layouts hard to stay with.
+
+**The problem it targets.** A typical news or blog page stacks three to five attention-grabbers on top of the text you
+came for: an overlay ad, a share bar, an inline video, a newsletter popup and a "related posts" rail. Closing them one
+by one is a manual chore that repeats on every page and every visit. Sensory Shield reduces that to one button that
+clears the reading surface and returns the text in a quieter form.
+
+**What it is not.** It is not an ad blocker (it never touches network requests or filter lists), not a full reader mode
+(it does not reflow a site beyond the text column), and not a medical or therapeutic product. See
+[Scope and limitations](#scope-and-limitations).
+
 ## Processing modes
 
 | Mode | Requires a key | Network | Behaviour |
@@ -36,25 +55,79 @@ hyperbolic wording in page copy, and re-expressing the same information in quiet
 The extension ships with **no API key, no proxy and no telemetry**. Remote mode only activates with a key that you
 enter yourself; it is stored in `chrome.storage.sync`.
 
-## Install
+## What it actually does
 
-### From the packaged release
+The observations below come from the maintainer's offline test page, which loads `content.js`, `background.js` and
+`popup.js` in headless Chrome against a stubbed `chrome.*` API surface (52 assertions, all passing at v1.0.1). That test
+page is not part of this repository, but every behaviour listed here is reproducible by loading the extension as
+described above.
 
-1. Download [`sensory-shield-1.0.0.zip`](https://tewei02.github.io/sensory-shield/downloads/sensory-shield-1.0.0.zip)
-   (also available in [`docs/downloads/`](docs/downloads/)).
-2. Unzip it into a folder you intend to keep.
-3. Open `chrome://extensions` (or `edge://extensions`) and turn on **Developer mode**.
-4. Click **Load unpacked** and select the folder containing `manifest.json`.
-5. Pin the extension, open an article page and click **啟動感官煞車**.
+Hiding behaviour, measured on a page that contains all of these elements:
 
-Full instructions, troubleshooting and removal steps are in [INSTALL.md](INSTALL.md).
+| Element present on the page | Result |
+| --- | --- |
+| container with class `ad-banner` / `advertisement`, or `data-testid="ad-slot"` | hidden (`display: none`) |
+| container with id `socialShareBar` or class `social-share-bar` | hidden, including the images inside it |
+| images inside the article | hidden |
+| container with class `download-area` | **left visible** |
+| header with class `header-gradient` | **left visible** |
+| element whose class contains `download-area` and whose id is `share` | visible — the two tokens are not cross-matched |
+
+Text handling, measured in the same run:
+
+- extracted main text is capped at **8,000 characters**, and the card states that only the first 8,000 were processed;
+- long sentences are split into segments of at most ~55 characters;
+- bullet output is capped at 5 points;
+- empty or structureless input does not throw, and is reported back with an explicit note instead;
+- the reading style applied to the page is single-column, caps the text column at **800 px** and disables animation.
+
+A before/after pair, taken verbatim from the local rule engine:
+
+```
+in : 震驚！這款產品保證無敵，全網瘋傳，必買！
+out: 這款產品。
+```
+
+```
+in : Shocking! This exclusive report is guaranteed to go viral, and it is a must-read for anyone …
+out: This report is to go
+     and it is a for anyone who follows the topic. Researchers spent three years interviewing …
+     - This report is to go, and it is a for anyone who follows the topic. …
+
+```
+
+**Read those two samples honestly.** The local rule engine removes hype word group by word group; it does not rewrite
+grammar, so the sentence it leaves behind can read as clipped or incomplete — that is the documented cost of a mode
+that is offline, deterministic, instant and free. If you need flowing prose, set an API key and use remote rewrite mode.
+The demo on the landing page is a **simulation** of the card, not a capture of a live run.
+
+## Design principles
+
+- **No telemetry, no account, no proxy.** The extension issues no network request unless you configure an endpoint.
+- **Reproducible release.** `scripts/build_zip.py` and `scripts/verify_package.py` use only the Python standard
+  library, and CI builds plus verifies on every push.
+- **Self-contained.** No CDN, no external fonts, no runtime dependency, no Node toolchain.
+- **Honest limits.** The hiding rules are conservative by design, and the 8,000-character cap is announced in the UI.
+- **Small surface.** Three permissions, each explained below, and icons generated by a script kept in this repository.
+
+## Install in three steps
+
+1. **Get the files.** Download
+   [`sensory-shield-1.0.1.zip`](https://tewei02.github.io/sensory-shield/downloads/sensory-shield-1.0.1.zip)
+   (also mirrored in [`docs/downloads/`](docs/downloads/)) and unzip it into a folder you intend to keep.
+2. **Load it.** Open `chrome://extensions` (or `edge://extensions`), turn on **Developer mode** in the top-right
+   corner, click **Load unpacked**, and select the folder that contains `manifest.json`.
+3. **Use it.** Pin the extension, open an article or a long post and click **啟動感官煞車**. The neutral version of the
+   text appears in a card at the top of the page.
+
+Detailed troubleshooting, permission rationale and removal steps live in [INSTALL.md](INSTALL.md).
 
 ### From source
 
 ```bash
 git clone https://github.com/TeWei02/sensory-shield.git
 cd sensory-shield
-python3 scripts/build_zip.py     # writes dist/sensory-shield-1.0.0.zip
+python3 scripts/build_zip.py     # writes dist/sensory-shield-1.0.1.zip
 python3 scripts/verify_package.py
 ```
 

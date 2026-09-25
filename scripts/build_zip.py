@@ -37,6 +37,10 @@ ASSET_DIRS = ["icons"]
 SITE_FILES = ["index.html", "styles.css", "demo.js"]
 SITE_ASSETS = ["assets/overview.svg", "assets/icon128.png", "icons/icon128.png"]
 
+# Fixed timestamp so that two builds of the same sources produce byte-identical
+# archives (source mtimes do not leak into the published zip). Must stay >= 1980.
+ZIP_TIMESTAMP = (2026, 1, 1, 0, 0, 0)
+
 
 def read_manifest():
     with open(os.path.join(ROOT, "manifest.json"), encoding="utf-8") as fh:
@@ -89,6 +93,30 @@ def sync_site():
     return copied
 
 
+def write_entry(zf, src, rel):
+    """Write one payload file with a fixed timestamp (reproducible archive)."""
+    with open(src, "rb") as fh:
+        data = fh.read()
+    info = zipfile.ZipInfo(rel, date_time=ZIP_TIMESTAMP)
+    info.compress_type = zipfile.ZIP_DEFLATED
+    info.external_attr = 0o644 << 16
+    zf.writestr(info, data)
+
+
+def warn_stale_archives(version):
+    """Report leftover archives of other versions; they are never deleted here."""
+    stale = []
+    for folder in (DIST, DOCS_DOWNLOADS):
+        if not os.path.isdir(folder):
+            continue
+        for name in sorted(os.listdir(folder)):
+            if not name.startswith("sensory-shield-") or not name.endswith(".zip"):
+                continue
+            if name != f"sensory-shield-{version}.zip":
+                stale.append(os.path.relpath(os.path.join(folder, name), ROOT))
+    return stale
+
+
 def build():
     manifest = read_manifest()
     version = manifest["version"]
@@ -101,7 +129,7 @@ def build():
     out = os.path.join(DIST, f"sensory-shield-{version}.zip")
     with zipfile.ZipFile(out, "w", zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
         for src, rel in files:
-            zf.write(src, rel)
+            write_entry(zf, src, rel)
 
     served = os.path.join(DOCS_DOWNLOADS, os.path.basename(out))
     shutil.copyfile(out, served)
@@ -114,6 +142,7 @@ def build():
         "size_kb": round(os.path.getsize(out) / 1024, 1),
         "zip_entries": [rel for _src, rel in files],
         "site_files": site_files,
+        "stale_archives": warn_stale_archives(version),
     }, ensure_ascii=False, indent=2))
     return 0
 

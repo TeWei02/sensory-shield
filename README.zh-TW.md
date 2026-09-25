@@ -2,7 +2,7 @@
 
 > 把資訊過載的網頁轉換成冷靜、低刺激閱讀檢視的 Manifest V3 瀏覽器擴充功能。
 
-[![版本](https://img.shields.io/badge/version-1.0.0-2563eb.svg)](#)
+[![版本](https://img.shields.io/badge/version-1.0.1-2563eb.svg)](#)
 [![Manifest V3](https://img.shields.io/badge/manifest-v3-7c3aed.svg)](#)
 [![平台](https://img.shields.io/badge/platform-Chrome%20%7C%20Edge-1f7a4d.svg)](#)
 [![授權](https://img.shields.io/badge/license-MIT-c2410c.svg)](LICENSE)
@@ -24,6 +24,20 @@ Sensory Shield 是一套瀏覽器閱讀輔助工具。在你正在閱讀的頁�
 
 在設計取向上，本專案以**語意感知**與**情感運算**為核心概念：降低感知負荷、辨識頁面文案中的誇飾語氣，並以更平穩的語言重新表述同一份資訊。
 
+## 適用對象與痛點
+
+Sensory Shield 寫給已經決定要讀某篇內容、卻得先跟頁面搏鬥的人：
+
+- 每天在螢幕上讀長文、技術文件或論壇討論串的人；
+- 一再被自動播放影音、黏在側邊的分享列、訂閱彈窗與廣告版位打斷的讀者；
+- 想把標題與文案的情緒音量調低的人；
+- 偏好離線可用、不需帳號、不受追蹤的工具的使用者；
+- 對多欄、帶動畫的版面難以久讀的 ADHD 或感官敏感讀者。
+
+**它要解決的痛點。** 一般新聞或部落格頁面，會在你真正想讀的文字上方疊上三到五個搶注意力的元素：蓋版廣告、分享列、內嵌影片、電子報彈窗，以及「相關文章」推薦區。逐一關閉這類元素，是每開一頁、每進一次站都要重做的手動雜事。Sensory Shield 把它收斂成一個按鈕：清掉閱讀面上的干擾，並把文字以更平穩的形式還給你。
+
+**它不是什麼。** 它不是廣告封鎖器（完全不碰網路請求與過濾清單），不是完整閱讀模式（不會重排整個網站版面），也不是醫療或療效產品。詳見[範圍與限制](#範圍與限制)。
+
 ## 處理模式
 
 | 模式 | 需要金鑰 | 網路連線 | 行為 |
@@ -34,24 +48,67 @@ Sensory Shield 是一套瀏覽器閱讀輔助工具。在你正在閱讀的頁�
 
 擴充功能**不內建任何 API Key、不經代理、不收集使用資料**。雲端模式僅在你自行輸入金鑰後啟用，金鑰儲存於 `chrome.storage.sync`。
 
-## 安裝
+## 實際效果
 
-### 使用打包成品
+以下觀察來自維護者的離線測試頁：以 headless Chrome 載入 `content.js`、`background.js` 與 `popup.js`，並以 stub 取代 `chrome.*` API（52 項斷言，於 v1.0.1 全數通過）。該測試頁未收錄於本倉庫，但下列每一項行為都能用上面的安裝步驟重現。
 
-1. 下載 [`sensory-shield-1.0.0.zip`](https://tewei02.github.io/sensory-shield/downloads/sensory-shield-1.0.0.zip)（亦可於 [`docs/downloads/`](docs/downloads/) 取得）。
-2. 解壓縮到一個你要長期保留的資料夾。
-3. 開啟 `chrome://extensions`（或 `edge://extensions`），開啟右上角的**開發者模式**。
-4. 點選**載入未封裝項目**，選擇含 `manifest.json` 的資料夾。
-5. 將擴充功能釘選到工具列，開啟任一文章頁面並點選**啟動感官煞車**。
+隱藏行為（測試頁同時放入下列元素）：
 
-完整步驟、疑難排解與移除方式請見 [INSTALL.md](INSTALL.md)。
+| 頁面上的元素 | 結果 |
+| --- | --- |
+| class 含 `ad-banner` / `advertisement`，或 `data-testid="ad-slot"` 的容器 | 隱藏（`display: none`） |
+| id 為 `socialShareBar`、或 class 含 `social-share-bar` 的容器 | 隱藏，含其內部圖片 |
+| 文章內圖片 | 隱藏 |
+| class 含 `download-area` 的容器 | **保持可見** |
+| class 含 `header-gradient` 的頁首 | **保持可見** |
+| class 含 `download-area` 而 id 為 `share` 的元素 | 保持可見——兩個 token 不會被交叉誤判 |
+
+文字處理（同一次實測）：
+
+- 擷取正文上限 **8,000 字元**，且卡片會明示只處理了前 8,000 字元；
+- 長句會拆成每段約 55 字元以內；
+- 條列輸出上限 5 點；
+- 空輸入或無句子結構的輸入不會拋錯，會回報明確說明；
+- 套用於頁面的閱讀樣式為單欄、正文寬度上限 **800 px**、關閉動畫。
+
+本地規則模式的實際前後對照（原文照登）：
+
+```
+輸入：震驚！這款產品保證無敵，全網瘋傳，必買！
+輸出：這款產品。
+```
+
+```
+輸入：Shocking! This exclusive report is guaranteed to go viral, and it is a must-read for anyone …
+輸出：This report is to go
+      and it is a for anyone who follows the topic. Researchers spent three years interviewing …
+      - This report is to go, and it is a for anyone who follows the topic. …
+```
+
+**請如實看待這兩筆樣本。** 本地規則模式是逐詞組移除誇飾字詞，不會重寫語法，因此留下的句子可能顯得斷裂或不完整——這是「離線、確定性、即時、零成本」必然的代價。若需要通順的改寫，請設定 API Key 使用雲端改寫模式。展示頁上的卡片是**模擬示範**，不是實際執行的擷取畫面。
+
+## 設計原則
+
+- **無遙測、無帳號、無代理。** 未設定端點時，擴充功能不會發出任何網路請求。
+- **可重現的發佈流程。** `build_zip.py` 與 `verify_package.py` 只用 Python 標準庫；CI 在每次推送時建置並驗證。
+- **自帶檔案。** 無 CDN、無外部字型、無執行期相依、無 Node 工具鏈。
+- **限制透明。** 隱藏規則刻意保守，8,000 字元上限會顯示在介面上。
+- **表面積小。** 三個權限，逐一說明於下；圖示由本倉庫的腳本產生。
+
+## 安裝三步驟
+
+1. **取得檔案。** 下載 [`sensory-shield-1.0.1.zip`](https://tewei02.github.io/sensory-shield/downloads/sensory-shield-1.0.1.zip)（亦鏡像於 [`docs/downloads/`](docs/downloads/)），解壓縮到一個你要長期保留的資料夾。
+2. **載入擴充功能。** 開啟 `chrome://extensions`（或 `edge://extensions`），開啟右上角的**開發者模式**，點選**載入未封裝項目**，選擇含 `manifest.json` 的資料夾。
+3. **開始使用。** 將擴充功能釘選到工具列，開啟任一文章或長文頁面，點選**啟動感官煞車**。中性版本的文字會以卡片顯示在頁面頂端。
+
+完整步驟、疑難排解、權限理由與移除方式請見 [INSTALL.md](INSTALL.md)。
 
 ### 從原始碼建置
 
 ```bash
 git clone https://github.com/TeWei02/sensory-shield.git
 cd sensory-shield
-python3 scripts/build_zip.py     # 產生 dist/sensory-shield-1.0.0.zip
+python3 scripts/build_zip.py     # 產生 dist/sensory-shield-1.0.1.zip
 python3 scripts/verify_package.py
 ```
 

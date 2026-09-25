@@ -10,8 +10,10 @@ no third-party packages) and checks:
   4. Shipped files contain no placeholder scaffolding, no authoring artefacts and
      no external CDN references.
   5. The published GitHub Pages tree (docs/) is byte-identical to the source tree.
-  6. The built zip has manifest.json at its root, contains the expected payload
-     and passes archive integrity checks.
+  6. User-facing files (README.md, README.zh-TW.md, INSTALL.md, index.html) link the
+     archive of the current manifest version and never an older one.
+  7. The built zip has manifest.json at its root, contains the expected payload,
+     carries one fixed timestamp per entry and passes archive integrity checks.
 
 Exit code 0 means the release is verifiable; any failure returns non-zero.
 """
@@ -168,6 +170,17 @@ def main():
             check(f"{rel} has no external CDN reference", cdn is None,
                   cdn.group(0) if cdn else "")
 
+    archive = f"sensory-shield-{version}.zip"
+    for rel in ("README.md", "README.zh-TW.md", "INSTALL.md", "index.html", "docs/index.html"):
+        path = os.path.join(ROOT, rel)
+        if not os.path.isfile(path):
+            continue
+        text = open(path, encoding="utf-8").read()
+        check(f"{rel} links the current archive {archive}", archive in text)
+        mentioned = sorted(set(re.findall(r"sensory-shield-([0-9.]+)\.zip", text)))
+        check(f"{rel} mentions no archive of another version",
+              all(v == version for v in mentioned), ", ".join(mentioned))
+
     for readme in ("README.md", "README.zh-TW.md"):
         path = os.path.join(ROOT, readme)
         if os.path.isfile(path):
@@ -207,6 +220,9 @@ def main():
                   not any(n.lower().endswith((".md", ".svg")) for n in names))
             bad = zf.testzip()
             check("zip integrity", bad is None, str(bad))
+            stamps = sorted({info.date_time for info in zf.infolist()})
+            check("zip entries carry one fixed timestamp (reproducible build)",
+                  len(stamps) == 1, str(stamps))
             try:
                 packaged = json.loads(zf.read("manifest.json").decode("utf-8"))
                 check("packaged manifest matches repository manifest",
@@ -219,6 +235,14 @@ def main():
         if os.path.isfile(served):
             check("published zip is identical to dist zip",
                   sha256(served) == sha256(zip_path))
+
+    for folder in ("dist", os.path.join("docs", "downloads")):
+        full = os.path.join(ROOT, folder)
+        if not os.path.isdir(full):
+            continue
+        stale = [name for name in sorted(os.listdir(full))
+                 if name.startswith("sensory-shield-") and name.endswith(".zip") and name != archive]
+        check(f"{folder}/ holds no archive of another version", not stale, ", ".join(stale))
 
     print(f"\n{CHECKS - len(FAILURES)}/{CHECKS} checks passed")
     if FAILURES:
