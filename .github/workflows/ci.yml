@@ -27,6 +27,9 @@ jobs:
       - name: Verify package
         run: python3 scripts/verify_package.py
 
+      - name: Run behavioural harness
+        run: python3 tests/run.py
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

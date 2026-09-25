@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>Sensory Shield preview page</title>
+<style>
+  body { font-family: system-ui, -apple-system, "PingFang TC", sans-serif; margin: 0; }
+  .topbar { background: #10233f; color: #fff; padding: 10px 24px; font-size: 13px; }
+  .layout { display: flex; gap: 24px; padding: 24px; }
+  .rail { flex: 0 0 220px; background: #f1f3f7; padding: 14px; font-size: 13px; color: #556; }
+  .article { flex: 1 1 auto; }
+  .ad-banner { background: #ffe9c7; border: 1px dashed #d0a05a; padding: 18px; text-align: center; margin-bottom: 16px; }
+  #socialShareBar { display: flex; gap: 10px; margin: 16px 0; }
+  #socialShareBar span { background: #e8ecf5; padding: 6px 12px; border-radius: 4px; font-size: 13px; color: #456; }
+  .player { background: #222; color: #ddd; padding: 40px; text-align: center; margin: 16px 0; }
+</style>
+</head>
+<body>
+<div class="topbar">城市閱讀 · 每日長文</div>
+
+<div class="ad-banner">贊助內容 — 立即訂閱，限時五折！</div>
+
+<div class="layout">
+  <aside class="rail">熱門排行<br><br>1. 通勤路線調整<br>2. 老屋翻修筆記<br>3. 巷口那家咖啡店</aside>
+
+  <article class="article">
+    <h1>在城市裡找一個安靜的角落</h1>
+    <p>搬到這條巷子的第三個月，我才注意到轉角的騎樓下有一排舊椅子。白天沒有什麼人坐，傍晚會出現幾個剛下班的鄰居，各自看著手機或遠方，很少交談。</p>
+    <p>我開始在晚飯後帶一本書下樓，坐上半小時。這半小時裡沒有通知、沒有待辦清單，只有偶爾經過的機車聲，以及隔壁麵店收攤時鍋蓋碰撞的聲音。</p>
+    <div class="player">▶ 自動播放影片（十五秒廣告）</div>
+    <p>安靜不是一種狀態，比較像是一種練習。先把手機收起來，再把注意力放回眼前這一段文字，一次一行。讀得慢一點也沒有關係。</p>
+
+    <div id="socialShareBar"><span>分享到 Facebook</span><span>分享到 LINE</span><span>複製連結</span><span>收藏</span></div>
+
+    <p>後來我發現，其實不需要特別去找一個地方。只要願意把手上的事情放下十分鐘，公寓的陽台、圖書館的角落、甚至公車上最後一排，都可以是那個安靜的角落。</p>
+  </article>
+</div>
+
+<script>
+// Same stand-in surface as the test harness. Both scripts run here, so the
+// local rule engine really produces the card instead of a canned string.
+window.__listeners = { content: [], bg: [] };
+window.__phase = 'content';
+window.chrome = {
+  runtime: {
+    onMessage: { addListener: function (fn) { window.__listeners[window.__phase].push(fn); } },
+    sendMessage: function (msg) { return window.__deliver('bg', msg, { tab: { id: 1 } }); }
+  },
+  tabs: { sendMessage: function (tabId, msg) { return window.__deliver('content', msg, {}); } },
+  storage: { sync: { get: async function () { return {}; }, set: async function () {}, remove: async function () {} } },
+  scripting: { executeScript: async function () { return []; } }
+};
+window.__deliver = function (which, msg, sender) {
+  return new Promise(function (resolve) {
+    var list = window.__listeners[which].slice();
+    if (!list.length) { resolve(); return; }
+    var remaining = list.length;
+    var finish = function () { remaining -= 1; if (remaining <= 0) resolve(); };
+    list.forEach(function (fn) {
+      var settled = false;
+      var sendResponse = function () { if (!settled) { settled = true; finish(); } };
+      var ret;
+      try { ret = fn(msg, sender, sendResponse); } catch (e) { settled = true; finish(); return; }
+      if (ret !== true) { if (!settled) { settled = true; finish(); } }
+      else { setTimeout(function () { if (!settled) { settled = true; finish(); } }, 1500); }
+    });
+  });
+};
+</script>
+<script src="../content.js"></script>
+<script>window.__phase = 'bg';</script>
+<script src="../background.js"></script>
+<script>
+// The popup normally asks the tab to start; the preview drives the same path.
+window.addEventListener('load', function () {
+  setTimeout(function () { window.__deliver('content', { type: 'SENSORY_SHIELD_START' }, {}); }, 150);
+});
+</script>
+</body>
+</html>

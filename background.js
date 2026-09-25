@@ -36,8 +36,8 @@ const MAX_BULLETS = 5;
 const MAX_BULLET_CHARS = 90;
 const LONG_SENTENCE_CHARS = 55;
 
-/** Mirrors MAX_INPUT_CHARS in content.js: the per-run page-text cap applied there. */
-const MAX_INPUT_CHARS = 8000;
+/** Mirrors LOCAL_MAX_INPUT_CHARS in content.js: the per-run page-text cap applied there. */
+const LOCAL_MAX_INPUT_CHARS = 8000;
 
 const SYSTEM_PROMPT = [
   '你是一個神經多樣性友善（neurodiversity-friendly）的閱讀助理。',
@@ -264,7 +264,7 @@ async function handleMessage(message, sender) {
 
   const wasTruncated = message?.truncated === true;
   const truncatedMsg = wasTruncated
-    ? `頁面文字超過 ${MAX_INPUT_CHARS} 字元上限，僅處理前 ${MAX_INPUT_CHARS} 字元。`
+    ? `頁面文字超過 ${LOCAL_MAX_INPUT_CHARS} 字元上限，僅處理前 ${LOCAL_MAX_INPUT_CHARS} 字元。`
     : '';
 
   const { openaiApiKey, openaiModel, openaiApiBaseUrl } = await getConfig();

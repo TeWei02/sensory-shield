@@ -11,6 +11,12 @@
 **線上展示與下載：** <https://tewei02.github.io/sensory-shield/>
 **安裝說明：** [INSTALL.md](INSTALL.md) · [English README](README.md)
 
+| 啟用前 | 啟用後 |
+| --- | --- |
+| ![長文頁面，帶有廣告橫幅、自動播放影片與常駐分享列](assets/before.png) | ![同一頁面在擴充功能執行後：干擾消失，正文改以卡片重新呈現](assets/after.png) |
+
+*兩張畫面皆取自倉庫內的預覽頁 [`tests/preview.html`](tests/preview.html)。*
+
 ---
 
 ## 專案概述
@@ -50,7 +56,7 @@ Sensory Shield 寫給已經決定要讀某篇內容、卻得先跟頁面搏鬥�
 
 ## 實際效果
 
-以下觀察來自維護者的離線測試頁：以 headless Chrome 載入 `content.js`、`background.js` 與 `popup.js`，並以 stub 取代 `chrome.*` API（52 項斷言，於 v1.0.1 全數通過）。該測試頁未收錄於本倉庫，但下列每一項行為都能用上面的安裝步驟重現。
+以下觀察來自 [`tests/harness.html`](tests/harness.html)：在一般頁面中載入 `content.js` 與 `background.js`，並以 stub 取代 `chrome.*` API。執行 `python3 tests/run.py` 即可自行重跑，**27 項斷言於 v1.0.1 全數通過**，CI 每次推送都會執行同一支腳本。下列每一項行為都能藉此重現，或用上面的安裝步驟重現。
 
 隱藏行為（測試頁同時放入下列元素）：
 
@@ -123,6 +129,7 @@ python3 scripts/verify_package.py
 | `python3 scripts/build_zip.py` | 產生 `dist/sensory-shield-<version>.zip`、更新 `docs/downloads/`，並將靜態展示頁同步到 `docs/`。 |
 | `python3 scripts/verify_package.py` | 靜態檢查：manifest 欄位、參照檔案、圖示尺寸、禁用佔位字串、CDN 參照與 zip 完整性。 |
 | `python3 scripts/make_icons.py` | 重新產生 `icons/icon16/32/48/128.png`。 |
+| `python3 tests/run.py` | 以 headless Chrome 執行 `tests/harness.html` 並列出每一項斷言；任一項失敗即以非零狀態結束。 |
 
 `verify_package.py` 是發佈的守門檻：只要殘留未解析佔位符、樣板檔、外部 CDN 參照，或封裝檔缺漏、格式錯誤，都會直接失敗。
 
@@ -144,7 +151,8 @@ sensory-shield/
 │   ├── verify_package.py    # 發佈驗證守門檻
 │   └── make_icons.py        # 圖示產生
 ├── docs/                    # 已發佈的 GitHub Pages 站台與可下載 zip
-└── .github/workflows/ci.yml # 每次推送自動建置與驗證
+├── tests/                   # 行為驗證與預覽
+└── .github/workflows/ci.yml # 每次推送自動建置、驗證與測試
 ```
 
 ## 權限說明

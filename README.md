@@ -11,6 +11,12 @@
 **Live demo and download:** <https://tewei02.github.io/sensory-shield/>
 **Installation guide:** [INSTALL.md](INSTALL.md) · [繁體中文說明](README.zh-TW.md)
 
+| Before | After |
+| --- | --- |
+| ![A long article page with an ad banner, an autoplay player and a sticky share rail](assets/before.png) | ![The same page after the extension has run: the distractions are gone and the text is re-presented in a card](assets/after.png) |
+
+*Both frames come from [`tests/preview.html`](tests/preview.html), the repository's own preview page.*
+
 ---
 
 ## Overview
@@ -57,10 +63,10 @@ enter yourself; it is stored in `chrome.storage.sync`.
 
 ## What it actually does
 
-The observations below come from the maintainer's offline test page, which loads `content.js`, `background.js` and
-`popup.js` in headless Chrome against a stubbed `chrome.*` API surface (52 assertions, all passing at v1.0.1). That test
-page is not part of this repository, but every behaviour listed here is reproducible by loading the extension as
-described above.
+The observations below come from [`tests/harness.html`](tests/harness.html), which loads `content.js` and
+`background.js` into a plain page against a stubbed `chrome.*` surface. Run it yourself with `python3 tests/run.py`;
+**27 assertions pass at v1.0.1**, and CI runs the same script on every push. Every behaviour listed here is
+reproducible that way, or by loading the extension as described above.
 
 Hiding behaviour, measured on a page that contains all of these elements:
 
@@ -129,6 +135,7 @@ git clone https://github.com/TeWei02/sensory-shield.git
 cd sensory-shield
 python3 scripts/build_zip.py     # writes dist/sensory-shield-1.0.1.zip
 python3 scripts/verify_package.py
+python3 tests/run.py             # drives content.js + background.js in headless Chrome
 ```
 
 Then load the repository folder (or the unzipped `dist/` archive) as an unpacked extension.
@@ -143,6 +150,7 @@ so the release can be reproduced on any machine with `python3`.
 | `python3 scripts/build_zip.py` | Builds `dist/sensory-shield-<version>.zip`, refreshes `docs/downloads/`, and syncs the static landing page into `docs/`. |
 | `python3 scripts/verify_package.py` | Static checks: manifest fields, referenced files, icon sizes, forbidden placeholder strings, CDN references and zip integrity. |
 | `python3 scripts/make_icons.py` | Regenerates `icons/icon16/32/48/128.png`. |
+| `python3 tests/run.py` | Runs `tests/harness.html` in headless Chrome and prints every assertion. Exit code is non-zero if any fails. |
 
 `verify_package.py` is the release gate: it fails on unresolved placeholders, leftover scaffolding, external CDN
 references and a missing or malformed package.
@@ -164,8 +172,12 @@ sensory-shield/
 │   ├── build_zip.py         # Packaging (standard library only)
 │   ├── verify_package.py    # Release verification gate
 │   └── make_icons.py        # Icon generation
+├── tests/
+│   ├── harness.html         # Behavioural harness: stubbed chrome.* + 27 assertions
+│   ├── run.py               # Runs the harness in headless Chrome
+│   └── preview.html         # Preview page used for the screenshots above
 ├── docs/                    # Published GitHub Pages site + downloadable zip
-└── .github/workflows/ci.yml # Build and verify on every push
+└── .github/workflows/ci.yml # Build, verify and test on every push
 ```
 
 ## Permissions

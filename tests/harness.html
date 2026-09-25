@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>Sensory Shield behavioural harness</title>
+</head>
+<body>
+<article id="art">
+  <h1>Feed article</h1>
+  <p>震驚！這款產品保證無敵，全網瘋傳，必買！</p>
+  <p>這是一段刻意寫得很長的句子，裡面塞進許多彼此獨立的子句，用來驗證長句是否真的會被拆成幾個較短的片段，同時也要確認拆解之後標點符號不會整批消失，最後還要能產生條列重點，讓閱讀時不必一次消化太多資訊，眼睛和大腦都能稍微喘口氣。</p>
+  <p>這是一段普通的敘述文字，沒有誇飾詞，應該要原樣保留。</p>
+</article>
+<div class="ad-banner">廣告內容</div>
+<div id="socialShareBar">分享列</div>
+<img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="decorative">
+<div class="download-area">下載區（不應被隱藏）</div>
+<div class="header-gradient">表頭漸層（不應被隱藏）</div>
+<pre id="report"></pre>
+
+<script>
+// Minimal chrome.* stand-in. The extension reaches the browser through these
+// surfaces only, so both scripts can be driven inside a plain page.
+window.__listeners = { content: [], bg: [] };
+window.__phase = 'content';
+window.chrome = {
+  runtime: {
+    onMessage: { addListener: function (fn) { window.__listeners[window.__phase].push(fn); } },
+    sendMessage: function (msg) { return window.__deliver('bg', msg, { tab: { id: 1 } }); }
+  },
+  tabs: { sendMessage: function (tabId, msg) { return window.__deliver('content', msg, {}); } },
+  storage: { sync: { get: async function () { return {}; }, set: async function () {}, remove: async function () {} } },
+  scripting: { executeScript: async function () { return []; } }
+};
+window.__deliver = function (which, msg, sender) {
+  return new Promise(function (resolve) {
+    var list = window.__listeners[which].slice();
+    if (!list.length) { resolve(); return; }
+    var remaining = list.length;
+    var finish = function () { remaining -= 1; if (remaining <= 0) resolve(); };
+    list.forEach(function (fn) {
+      var settled = false;
+      var sendResponse = function () { if (!settled) { settled = true; finish(); } };
+      var ret;
+      try { ret = fn(msg, sender, sendResponse); } catch (e) { settled = true; finish(); return; }
+      if (ret !== true) { if (!settled) { settled = true; finish(); } }
+      else { setTimeout(function () { if (!settled) { settled = true; finish(); } }, 1500); }
+    });
+  });
+};
+</script>
+<script src="../content.js"></script>
+<script>window.__phase = 'bg';</script>
+<script src="../background.js"></script>
+<script>
+(function () {
+  var results = [];
+  function assert(name, ok, detail) {
+    results.push({ name: name, ok: !!ok, detail: String(detail === undefined ? '' : detail) });
+  }
+  function waitFor(fn, timeout) {
+    return new Promise(function (resolve) {
+      var start = Date.now();
+      (function loop() {
+        var v = null;
+        try { v = fn(); } catch (e) { v = null; }
+        if (v) { resolve(v); return; }
+        if (Date.now() - start > timeout) { resolve(null); return; }
+        setTimeout(loop, 40);
+      })();
+    });
+  }
+
+  // ---- unit: local rule engine ----
+  var r1 = localNeutralize('震驚！這款產品保證無敵，全網瘋傳，必買！');
+  assert('localNeutralize removes hype words',
+    !/震驚|保證|無敵|瘋傳|必買/.test(r1.text), r1.text.slice(0, 80));
+  var r2 = localNeutralize('這是一段刻意寫得很長的句子，裡面塞進許多彼此獨立的子句，用來驗證長句是否真的會被拆成幾個較短的片段，同時也要確認拆解之後標點符號不會整批消失，最後還要能產生條列重點，讓閱讀時不必一次消化太多資訊，眼睛和大腦都能稍微喘口氣。');
+  var r2lines = r2.text.split('\n').filter(function (l) { return l && l.indexOf('- ') !== 0; });
+  assert('localNeutralize splits long sentence', r2lines.length >= 2, 'lines=' + r2lines.length);
+  assert('split segments stay <= 55 chars', r2lines.every(function (l) { return l.length <= 56; }),
+    JSON.stringify(r2lines.map(function (l) { return l.length; })));
+  var r3 = localNeutralize('第一句值得記錄的內容。第二句也很重要。第三句同樣關鍵。第四句是補充。第五句收尾。第六句應該被截掉。');
+  var bullets = r3.text.split('\n').filter(function (l) { return l.indexOf('- ') === 0; });
+  assert('bullet list produced (<=5 items)', bullets.length > 0 && bullets.length <= 5, 'n=' + bullets.length);
+  var r4 = localNeutralize('');
+  assert('empty input does not throw', typeof r4.text === 'string', JSON.stringify(r4));
+
+  // ---- noise token matching ----
+  function mk(cls, id) { var d = document.createElement('div'); if (cls) d.className = cls; if (id) d.id = id; return d; }
+  assert('class "ad-banner" flagged as noise', isNoiseElement(mk('ad-banner')) === true);
+  assert('class "advertisement" flagged', isNoiseElement(mk('advertisement')) === true);
+  assert('id "socialShareBar" flagged', isNoiseElement(mk('', 'socialShareBar')) === true);
+  assert('class "download-area" NOT flagged', isNoiseElement(mk('download-area')) === false);
+  assert('class "header-gradient" NOT flagged', isNoiseElement(mk('header-gradient')) === false);
+  assert('data-testid="ad-slot" flagged', (function () {
+    var d = mk('x'); d.setAttribute('data-testid', 'ad-slot'); return isNoiseElement(d);
+  })() === true);
+
+  // ---- extraction ----
+  var ex = extractMainText();
+  assert('extractMainText finds article text', !!ex && ex.text.length > 40, ex ? ex.text.length : 'null');
+  var tr = truncate(new Array(9001).join('字'));
+  assert('truncate caps at 8000 chars', tr.text.length === 8000 && tr.truncated === true, tr.text.length);
+
+  // ---- end to end ----
+  var adBefore = getComputedStyle(document.querySelector('.ad-banner')).display;
+  window.__deliver('content', { type: 'SENSORY_SHIELD_START' }, {}).then(function () {
+    return waitFor(function () { return document.getElementById('sensory-shield-result'); }, 3000);
+  }).then(function (card) {
+    assert('result card rendered', !!card);
+    assert('loading overlay removed', !document.getElementById('sensory-shield-loader'));
+    if (card) {
+      assert('card shows local mode label', /本地規則模式/.test(card.textContent), card.textContent.slice(0, 60));
+      assert('card contains bullet list', !!card.querySelector('li'), card.querySelectorAll('li').length);
+      assert('card is first child of body', document.body.firstElementChild === card);
+      assert('close button present', !!card.querySelector('button'));
+      card.querySelector('button').click();
+      assert('close button removes card', !document.getElementById('sensory-shield-result'));
+    }
+    assert('ad container hidden', getComputedStyle(document.querySelector('.ad-banner')).display === 'none', adBefore);
+    assert('share bar hidden', getComputedStyle(document.getElementById('socialShareBar')).display === 'none');
+    assert('image hidden', getComputedStyle(document.querySelector('body > img')).display === 'none');
+    assert('download area still visible', getComputedStyle(document.querySelector('.download-area')).display !== 'none');
+    assert('header-gradient still visible', getComputedStyle(document.querySelector('.header-gradient')).display !== 'none');
+    assert('reading style injected', !!document.getElementById('sensory-shield-style'));
+    assert('body max-width applied', getComputedStyle(document.body).maxWidth === '800px',
+      getComputedStyle(document.body).maxWidth);
+  }).catch(function (e) {
+    assert('e2e completed without exception', false, String(e && e.message));
+  }).then(function () {
+    document.getElementById('report').textContent = 'SSJSON_START' + JSON.stringify(results) + 'SSJSON_END';
+  });
+})();
+</script>
+</body>
+</html>
