@@ -17,9 +17,11 @@ const LOADER_ID = 'sensory-shield-loader';
 
 /**
  * Class/id fragments that reliably indicate ads, popups or overlays.
- * Matched per token (camelCase, kebab-case and snake_case are split first) so
- * that words such as "download", "header", "gradient" or "loading" are never
- * mistaken for ads.
+ * Matching is per token: camelCase, kebab-case and snake_case are split first,
+ * and neighbouring fragments are also tested as compounds, so a container
+ * named "socialShareBar" still matches the "socialshare" / "sharebar" tokens
+ * used here. Ordinary words such as "download", "header", "gradient" or
+ * "loading" never match on their own.
  */
 const NOISE_TOKENS = new Set([
   'ad',
@@ -48,20 +50,30 @@ const NOISE_TOKENS = new Set([
 ]);
 
 function tokenize(value) {
-  return String(value || '')
+  const tokens = String(value || '')
     .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
     .split(/[^a-zA-Z0-9]+/)
     .filter(Boolean)
     .map((token) => token.toLowerCase());
+
+  // "socialShareBar" splits into social / share / bar, none of which is listed
+  // in NOISE_TOKENS, so adjacent fragments are offered as compounds too
+  // ("socialshare", "sharebar").
+  const compounds = [];
+  for (let i = 0; i < tokens.length - 1; i += 1) {
+    compounds.push(tokens[i] + tokens[i + 1]);
+  }
+  return tokens.concat(compounds);
 }
 
 function isNoiseElement(element) {
-  const tokens = [
-    ...tokenize(element.className),
-    ...tokenize(element.id),
-    ...tokenize(element.getAttribute && element.getAttribute('data-testid')),
+  const getAttribute = element.getAttribute ? element.getAttribute.bind(element) : null;
+  const sources = [
+    getAttribute ? getAttribute('class') : element.className,
+    element.id,
+    getAttribute ? getAttribute('data-testid') : null,
   ];
-  return tokens.some((token) => NOISE_TOKENS.has(token));
+  return sources.some((source) => tokenize(source).some((token) => NOISE_TOKENS.has(token)));
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -73,6 +85,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
   if (request.type === 'SENSORY_SHIELD_RESULT') {
     handleNeutralizationResult(request);
+    sendResponse({ status: 'Sensory Shield result rendered' });
     return true;
   }
 
@@ -95,6 +108,9 @@ function handleSensoryShield() {
     chrome.runtime.sendMessage({
       type: 'SENSORY_SHIELD_EXTRACTED_TEXT',
       extractedText: extracted.text,
+      // Reported back in the result card so a cut-off run is never presented
+      // as a full rewrite.
+      truncated: extracted.truncated === true,
     });
   } catch (err) {
     removeLoadingState();

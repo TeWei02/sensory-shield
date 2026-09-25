@@ -36,6 +36,9 @@ const MAX_BULLETS = 5;
 const MAX_BULLET_CHARS = 90;
 const LONG_SENTENCE_CHARS = 55;
 
+/** Mirrors MAX_INPUT_CHARS in content.js: the per-run page-text cap applied there. */
+const MAX_INPUT_CHARS = 8000;
+
 const SYSTEM_PROMPT = [
   '你是一個神經多樣性友善（neurodiversity-friendly）的閱讀助理。',
   '請將使用者提供的網頁文章改寫成客觀、中立的版本：',
@@ -176,28 +179,48 @@ function shortenSentence(sentence) {
 }
 
 /**
+ * Cleans up punctuation left behind after hype wording is removed, so a line
+ * never keeps stray separators ("，，。" or "，！"), a space before a comma, or a
+ * leading separator.
+ */
+function tidy(text) {
+  let out = String(text)
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\s+([,.;:!?，。；：！？、])/g, '$1');
+  let previous;
+  do {
+    previous = out;
+    out = out
+      .replace(/([，,、；;：:])(?=\s*[。.！!？?])/g, '')
+      .replace(/([，,。.！!？?；;：:、])(?:\s*\1)+/g, '$1');
+  } while (out !== previous);
+  return out.replace(/^[\s，,、．.；;：:！!？?]+/, '').trim();
+}
+
+/**
  * Deterministic, offline rewriter: strips hype/emotional wording, shortens long
  * sentences and emits a short bullet summary. Used when no API key is present.
  */
 function localNeutralize(inputText) {
-  const cleaned = INTENSIFIER_PATTERNS.reduce(
-    (acc, pattern) => acc.replace(pattern, '。'),
-    HYPE_PATTERNS.reduce((acc, pattern) => acc.replace(pattern, ''), String(inputText))
-  )
-    .replace(/。{2,}/g, '。')
-    .replace(/^[。，、．,；;：:\s]+/, '')
-    .replace(/[ \t]{2,}/g, ' ')
-    .trim();
+  const cleaned = tidy(
+    INTENSIFIER_PATTERNS.reduce(
+      (acc, pattern) => acc.replace(pattern, '。'),
+      HYPE_PATTERNS.reduce((acc, pattern) => acc.replace(pattern, ''), String(inputText))
+    )
+  );
 
   const sentences = splitSentences(cleaned);
   const body = [];
   for (const sentence of sentences) {
     if (sentence.length < MIN_SENTENCE_CHARS) continue;
-    body.push(...shortenSentence(sentence));
+    for (const line of shortenSentence(sentence)) {
+      const tidied = tidy(line).replace(/[，,、；;：:]+$/, '');
+      if (tidied.length >= MIN_SENTENCE_CHARS) body.push(tidied);
+    }
   }
 
   const bullets = sentences
-    .map((s) => s.replace(/[。，,.；;]+$/, '').trim())
+    .map((s) => tidy(s).replace(/[。，,.；;]+$/, '').trim())
     .filter((s) => s.length >= 8)
     .slice(0, MAX_BULLETS)
     .map((s) => (s.length > MAX_BULLET_CHARS ? s.slice(0, MAX_BULLET_CHARS) + '…' : s));
@@ -209,8 +232,11 @@ function localNeutralize(inputText) {
   }
 
   return {
+    // `structured` is false when no sentence structure could be used, in which
+    // case the cleaned text is passed through unchanged. Both call sites report
+    // that in the card note so the output is not mistaken for a rewrite.
     text: sections.join('\n\n') || cleaned,
-    wasTruncated: sentences.length === 0,
+    structured: sections.length > 0,
   };
 }
 
@@ -236,15 +262,23 @@ async function handleMessage(message, sender) {
     return;
   }
 
+  const wasTruncated = message?.truncated === true;
+  const truncatedMsg = wasTruncated
+    ? `頁面文字超過 ${MAX_INPUT_CHARS} 字元上限，僅處理前 ${MAX_INPUT_CHARS} 字元。`
+    : '';
+
   const { openaiApiKey, openaiModel, openaiApiBaseUrl } = await getConfig();
 
   if (!openaiApiKey) {
-    const { text } = localNeutralize(inputText);
+    const { text, structured } = localNeutralize(inputText);
     await sendToTab(tabId, {
       ok: true,
       mode: 'local',
       neutralizedText: text,
-      note: '未設定 API Key，已使用本地規則模式（離線、不連網）。',
+      note:
+        '未設定 API Key，已使用本地規則模式（離線、不連網）。' +
+        (structured ? '' : '未偵測到句子結構，已保留清理後的原文。') +
+        truncatedMsg,
     });
     return;
   }
@@ -260,16 +294,19 @@ async function handleMessage(message, sender) {
       ok: true,
       mode: 'remote',
       neutralizedText,
-      note: `由 ${openaiModel} 改寫。頁面文字已傳送至你設定的 API 端點。`,
+      note: `由 ${openaiModel} 改寫。頁面文字已傳送至你設定的 API 端點。${truncatedMsg}`,
     });
   } catch (err) {
     // Graceful degradation: fall back to the on-device rewriter instead of failing.
-    const { text } = localNeutralize(inputText);
+    const { text, structured } = localNeutralize(inputText);
     await sendToTab(tabId, {
       ok: true,
       mode: 'local',
       neutralizedText: text,
-      note: `遠端 API 無法使用（${err?.message || '未知錯誤'}），已改用本地規則模式。`,
+      note:
+        `遠端 API 無法使用（${err?.message || '未知錯誤'}），已改用本地規則模式。` +
+        (structured ? '' : '未偵測到句子結構，已保留清理後的原文。') +
+        truncatedMsg,
     });
   }
 }

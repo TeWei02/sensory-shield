@@ -1,14 +1,14 @@
 # Installation guide
 
-Sensory Shield ships as an **unpacked extension archive** (`sensory-shield-1.0.0.zip`). Chrome and Edge no longer
+Sensory Shield ships as an **unpacked extension archive** (`sensory-shield-1.0.1.zip`). Chrome and Edge no longer
 allow off-store installation of signed `.crx` files, so the zip is the supported delivery format for both manual use
 and store submission.
 
 | Item | Value |
 | --- | --- |
-| Package | `sensory-shield-1.0.0.zip` |
-| Download | <https://tewei02.github.io/sensory-shield/downloads/sensory-shield-1.0.0.zip> |
-| Also in repo | [`docs/downloads/sensory-shield-1.0.0.zip`](docs/downloads/sensory-shield-1.0.0.zip) |
+| Package | `sensory-shield-1.0.1.zip` |
+| Download | <https://tewei02.github.io/sensory-shield/downloads/sensory-shield-1.0.1.zip> |
+| Also in repo | [`docs/downloads/sensory-shield-1.0.1.zip`](docs/downloads/sensory-shield-1.0.1.zip) |
 | Browsers | Chrome 114+ / Edge 114+ (Manifest V3) |
 | Toolchain | None. Python 3 is only needed to rebuild the package. |
 
@@ -16,7 +16,7 @@ and store submission.
 
 ## 1. Chrome (desktop)
 
-1. Download `sensory-shield-1.0.0.zip`.
+1. Download `sensory-shield-1.0.1.zip`.
 2. Unzip it. You should get a folder containing `manifest.json`, `background.js`, `content.js`, `popup.html` and
    `icons/`. **Keep this folder** — Chrome loads the extension from disk on every start, so deleting or moving it
    breaks the installation.
@@ -95,7 +95,7 @@ Removing the extension also clears its stored settings. No files are written out
 
 ## 8. Publishing to a store
 
-The same `docs/downloads/sensory-shield-1.0.0.zip` file is the upload artifact:
+The same `docs/downloads/sensory-shield-1.0.1.zip` file is the upload artifact:
 
 - **Chrome Web Store** — upload the zip in the developer dashboard; the manifest already carries a version, a
   ≤132-character description and 16/32/48/128 px icons.

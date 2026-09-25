@@ -1,6 +1,6 @@
 {
   "name": "sensory-shield",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "description": "Manifest V3 browser extension that turns overwhelming web pages into a calm, low-stimulation reading view.",
   "license": "MIT",

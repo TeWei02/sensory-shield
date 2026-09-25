@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "Sensory Shield",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Turns overwhelming web pages into a calm, low-stimulation reading view with neutral wording and short bullet points.",
     "icons": {
         "16": "icons/icon16.png",

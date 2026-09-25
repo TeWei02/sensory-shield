@@ -15,6 +15,11 @@ const el = {
   modeText: document.getElementById('modeText'),
 };
 
+const versionText = document.getElementById('versionText');
+if (versionText && chrome.runtime?.getManifest) {
+  versionText.textContent = `v${chrome.runtime.getManifest().version}`;
+}
+
 function setStatus(message, type = 'info') {
   if (!el.statusText) return;
   el.statusText.textContent = message;
