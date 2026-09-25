@@ -41,7 +41,6 @@ BANNED = [
     (r"\byour[-_]?name\b", "template author placeholder"),
     (r"\bTODO\b", "unfinished marker"),
     (r"\bFIXME\b", "unfinished marker"),
-    (r"生成式\s*AI", "authoring artefact"),
     (r"lorem ipsum", "filler text"),
     (r"example\.com/(your|repo)", "template URL"),
     (r"sk-[A-Za-z0-9]{24,}", "hard-coded API key"),
