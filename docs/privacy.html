@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sensory Shield — Privacy Policy</title>
+    <meta
+      name="description"
+      content="Privacy policy for the Sensory Shield browser extension: what stays in your browser, and what the optional remote rewrite mode sends to the endpoint you configure."
+    />
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f4f1ea;
+        --surface: #ffffff;
+        --text: #2b2b2b;
+        --muted: #6b6b6b;
+        --line: rgba(43, 43, 43, 0.14);
+        --accent: #2b7a78;
+        --warn-bg: #fdf6e3;
+        --warn-line: #d9c489;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #14161a;
+          --surface: #1b1e24;
+          --text: #e8e6e1;
+          --muted: #a2a3a8;
+          --line: rgba(232, 230, 225, 0.16);
+          --accent: #6fc7c3;
+          --warn-bg: #2a2417;
+          --warn-line: #7a6a3a;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+          "Noto Sans", "Noto Sans TC", "PingFang TC", sans-serif;
+        font-size: 16px;
+        line-height: 1.7;
+      }
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 40px 20px 72px;
+      }
+      header {
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 20px;
+        margin-bottom: 8px;
+      }
+      h1 {
+        font-size: 26px;
+        line-height: 1.3;
+        margin: 0 0 6px;
+      }
+      h2 {
+        font-size: 19px;
+        margin: 36px 0 10px;
+        padding-top: 8px;
+      }
+      h3 {
+        font-size: 16px;
+        margin: 22px 0 6px;
+      }
+      p,
+      li {
+        margin: 0 0 10px;
+      }
+      ul {
+        padding-left: 22px;
+      }
+      code {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        padding: 1px 5px;
+        font-size: 0.92em;
+      }
+      .sub {
+        color: var(--muted);
+        font-size: 14px;
+      }
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 18px 20px;
+        margin: 18px 0;
+      }
+      .callout {
+        background: var(--warn-bg);
+        border: 1px solid var(--warn-line);
+        border-radius: 12px;
+        padding: 16px 20px;
+        margin: 18px 0;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 12px 0 4px;
+        font-size: 15px;
+      }
+      th,
+      td {
+        text-align: left;
+        vertical-align: top;
+        border-bottom: 1px solid var(--line);
+        padding: 10px 8px;
+      }
+      th {
+        font-weight: 600;
+      }
+      footer {
+        margin-top: 44px;
+        padding-top: 18px;
+        border-top: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 14px;
+      }
+      a {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <h1>Sensory Shield — Privacy Policy</h1>
+        <p class="sub">
+          Applies to the Sensory Shield extension for Microsoft Edge, Google Chrome
+          and other Chromium-based browsers. Last updated: 26 September 2026.
+        </p>
+      </header>
+
+      <div class="callout">
+        <p>
+          <strong>Short version.</strong> Sensory Shield has no server of its own.
+          In its default <strong>local rule mode</strong> it makes no network
+          request at all. If you switch on the optional
+          <strong>remote rewrite</strong> mode and enter your own API key and
+          endpoint URL, the text the extension extracted from the current page is
+          sent from your browser to <em>that endpoint</em>, which you choose and
+          control. No page content, key or usage data is ever sent to the
+          extension's developer, and there is no analytics or telemetry of any
+          kind.
+        </p>
+      </div>
+
+      <h2>1. What the extension handles</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Where it goes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Page content of the tab you activate (article body text)</td>
+            <td>
+              Stayed in your browser in local rule mode. In remote rewrite mode,
+              sent to the endpoint you configured (see section 3).
+            </td>
+          </tr>
+          <tr>
+            <td>Your API key, model name and base URL (only if you use remote rewrite)</td>
+            <td>
+              Stored by your browser in <code>chrome.storage.sync</code> on your
+              device and in your own browser profile's sync storage. Never sent
+              anywhere except as the authorisation header of the request to the
+              endpoint you entered.
+            </td>
+          </tr>
+          <tr>
+            <td>Your choice of mode and per-page state</td>
+            <td>Kept in your browser's extension storage on your device.</td>
+          </tr>
+          <tr>
+            <td>Browsing history, tab list, page content of pages you never activated</td>
+            <td>Not collected, not read, not transmitted.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2>2. Local rule mode (default — no network activity)</h2>
+      <p>
+        In this mode the extension works entirely inside your browser. It hides
+        page elements whose class or id matches its clutter keyword list
+        (advertising, share bars, autoplay players, newsletter modals, decorative
+        image rows), injects a low-stimulation stylesheet, and builds the summary
+        card from the page's own text with a local rule set that drops opinionated
+        or urgency wording and splits long sentences.
+      </p>
+      <p>
+        No request leaves your machine. You can verify this in your browser's
+        developer tools network panel, or in the published source code.
+      </p>
+
+      <h2>3. Remote rewrite mode (optional — sends page text to your endpoint)</h2>
+      <p>
+        Remote rewrite is <strong>off by default</strong> and only becomes active
+        after you open the extension popup, expand
+        <em>AI settings (optional)</em>, and enter an API key together with an
+        OpenAI-compatible base URL. When active, this is exactly what happens:
+      </p>
+      <ul>
+        <li>
+          The extension extracts the main body text of the page you chose to calm
+          down. At most <strong>8,000 characters</strong> per page are used; when
+          the article is longer, the request carries only the first 8,000
+          characters and the summary card tells you the text was truncated at that
+          limit.
+        </li>
+        <li>
+          That text is sent as an HTTPS POST from your browser to
+          <code>&lt;your base URL&gt;/v1/chat/completions</code> — the endpoint
+          string you typed in. The request includes your prompt and the extracted
+          page text, and is authorised with the API key you stored locally.
+        </li>
+        <li>
+          The response (a rewritten summary) comes back to your browser and is
+          displayed on the card. The extension does not store the response beyond
+          the page you are viewing.
+        </li>
+        <li>
+          Because the endpoint is one you supply, that provider — not the
+          extension's developer — receives the text, and it handles the data under
+          its own privacy policy and terms. If you point the extension at a service
+          you run yourself, the text never reaches a third party. If you point it
+          at a commercial provider, that provider's retention and training policies
+          apply; review them before enabling this mode.
+        </li>
+        <li>
+          Do not enable remote rewrite on pages containing sensitive personal data
+          unless the endpoint you configured is one you are willing to send that
+          data to. Local rule mode always remains available as a fully offline
+          alternative.
+        </li>
+      </ul>
+      <p class="sub">
+        Note: local rule mode only trims and re-splits the page's own wording, so
+        its output reads as separate statements rather than fluent prose. The
+        optional remote mode is what produces a rewritten text; the trade-off is
+        the network request described above.
+      </p>
+
+      <h2>4. What the extension never does</h2>
+      <ul>
+        <li>No account, sign-in or registration.</li>
+        <li>No analytics, telemetry, crash reporting or advertising identifiers.</li>
+        <li>No selling, renting or sharing of data with data brokers.</li>
+        <li>
+          No request to any server operated by the developer — the developer
+          operates no servers for this extension, so it has no way to receive your
+          data.
+        </li>
+        <li>No injection of ads, affiliate links or sponsored content into pages.</li>
+      </ul>
+
+      <h2>5. Permissions and why they are requested</h2>
+      <ul>
+        <li>
+          <strong>Read and change your data on all websites</strong> — the reading
+          style and clutter-hiding rules must be able to run on whichever page you
+          choose to calm down, and the optional rewrite request must be able to
+          reach whichever endpoint you configure, including a self-hosted one. The
+          extension has no server component and cannot know in advance which sites
+          you read.
+        </li>
+        <li>
+          <strong>activeTab</strong> — limits the toolbar action to the tab you are
+          viewing when you click the icon.
+        </li>
+        <li>
+          <strong>scripting</strong> — injects the reading style into that active
+          tab when you press the start button.
+        </li>
+        <li>
+          <strong>storage</strong> — keeps your mode choice and, if you opt in,
+          your API key, model name and base URL in your browser's own sync storage.
+        </li>
+      </ul>
+
+      <h2>6. Your controls</h2>
+      <ul>
+        <li>
+          Use local rule mode permanently: leave the API fields empty and the
+          extension never makes a network request.
+        </li>
+        <li>
+          Remove stored credentials at any time with the <em>Clear</em> button in
+          the popup, which deletes the key, model and base URL from
+          <code>chrome.storage.sync</code>.
+        </li>
+        <li>
+          Disable or uninstall the extension from your browser's extension page;
+          doing so removes its local storage.
+        </li>
+        <li>
+          Read or build the code yourself:
+          <a href="https://github.com/TeWei02/sensory-shield">github.com/TeWei02/sensory-shield</a>.
+        </li>
+      </ul>
+
+      <h2>7. Data retention</h2>
+      <p>
+        The extension itself retains nothing outside your browser profile. Text
+        sent in remote rewrite mode is retained, if at all, by the endpoint
+        operator under its own policy; the developer has no access to it, no copy
+        of it and no way to delete it on your behalf.
+      </p>
+
+      <h2>8. Children</h2>
+      <p>
+        The extension is a general-purpose reading tool and is not directed at
+        children. It does not knowingly collect personal data from anyone,
+        including children.
+      </p>
+
+      <h2>9. Changes to this policy</h2>
+      <p>
+        Material changes will be published on this page together with the release
+        that introduces them, and the "last updated" date above will change. The
+        history of this file is visible in the public repository.
+      </p>
+
+      <h2>10. Contact</h2>
+      <p>
+        Questions or requests about this policy:
+        <a href="https://github.com/TeWei02/sensory-shield/issues"
+          >github.com/TeWei02/sensory-shield/issues</a
+        >.
+      </p>
+
+      <footer>
+        <p>
+          Sensory Shield is not a medical device and makes no health claims. It is
+          a reading aid that changes how a page is displayed and summarised.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>
