@@ -112,6 +112,8 @@ def warn_stale_archives(version):
         for name in sorted(os.listdir(folder)):
             if not name.startswith("sensory-shield-") or not name.endswith(".zip"):
                 continue
+            if name == f"sensory-shield-{version}-firefox.zip":
+                continue          # Firefox 版是另一個目標，不算過期
             if name != f"sensory-shield-{version}.zip":
                 stale.append(os.path.relpath(os.path.join(folder, name), ROOT))
     return stale

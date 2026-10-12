@@ -239,8 +239,11 @@ def main():
         full = os.path.join(ROOT, folder)
         if not os.path.isdir(full):
             continue
+        # Firefox 版是另一個目標，不是「其他版本的殘留封存」
+        firefox_archive = archive[:-4] + "-firefox.zip"
         stale = [name for name in sorted(os.listdir(full))
-                 if name.startswith("sensory-shield-") and name.endswith(".zip") and name != archive]
+                 if name.startswith("sensory-shield-") and name.endswith(".zip")
+                 and name not in (archive, firefox_archive)]
         check(f"{folder}/ holds no archive of another version", not stale, ", ".join(stale))
 
     print(f"\n{CHECKS - len(FAILURES)}/{CHECKS} checks passed")

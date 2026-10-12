@@ -109,6 +109,12 @@ Sensory Shield 寫給已經決定要讀某篇內容、卻得先跟頁面搏鬥�
 
 完整步驟、疑難排解、權限理由與移除方式請見 [INSTALL.md](INSTALL.md)。
 
+**Firefox：**請改用 `sensory-shield-1.0.1-firefox.zip`。Firefox 尚未支援 Manifest
+V3 的 service worker，因此該版本把 `background.js` 改成事件頁（event page），並帶
+有 `browser_specific_settings.gecko` 區塊。用 `python3 scripts/build_firefox.py`
+建置即可，已通過 `npx web-ext lint` 零錯誤、零警告。逐步說明見
+[INSTALL.md](INSTALL.md) 第 3 節。
+
 ### 從原始碼建置
 
 ```bash
@@ -129,6 +135,7 @@ python3 scripts/verify_package.py
 | `python3 scripts/build_zip.py` | 產生 `dist/sensory-shield-<version>.zip`、更新 `docs/downloads/`，並將靜態展示頁同步到 `docs/`。 |
 | `python3 scripts/verify_package.py` | 靜態檢查：manifest 欄位、參照檔案、圖示尺寸、禁用佔位字串、CDN 參照與 zip 完整性。 |
 | `python3 scripts/make_icons.py` | 重新產生 `icons/icon16/32/48/128.png`。 |
+| `python3 scripts/build_firefox.py` | 由 `manifest.firefox.json` 產生 Firefox 版（`dist/sensory-shield-<version>-firefox.zip`）：把 MV3 service worker 換成事件頁，並補上 gecko 設定。 |
 | `python3 tests/run.py` | 以 headless Chrome 執行 `tests/harness.html` 並列出每一項斷言；任一項失敗即以非零狀態結束。 |
 
 `verify_package.py` 是發佈的守門檻：只要殘留未解析佔位符、樣板檔、外部 CDN 參照，或封裝檔缺漏、格式錯誤，都會直接失敗。

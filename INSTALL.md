@@ -10,6 +10,7 @@ and store submission.
 | Download | <https://tewei02.github.io/sensory-shield/downloads/sensory-shield-1.0.1.zip> |
 | Also in repo | [`docs/downloads/sensory-shield-1.0.1.zip`](docs/downloads/sensory-shield-1.0.1.zip) |
 | Browsers | Chrome 114+ / Edge 114+ (Manifest V3) |
+| Firefox package | `sensory-shield-1.0.1-firefox.zip` — see section 3 |
 | Toolchain | None. Python 3 is only needed to rebuild the package. |
 
 ---
@@ -36,7 +37,43 @@ The neutralised text is rendered in a card at the top of the page.
 4. Click **Load unpacked** and choose the unzipped folder.
 5. Pin the extension from the toolbar's extensions menu, then use it the same way as in Chrome.
 
-## 3. Optional: enable remote rewrite
+## 3. Firefox (desktop)
+
+Firefox needs its own archive: Firefox does not yet support Manifest V3 service
+workers, so the Firefox build uses an **event page** instead
+(`"background": { "scripts": ["background.js"] }`). Everything else is identical.
+
+| Item | Value |
+| --- | --- |
+| Package | `sensory-shield-1.0.1-firefox.zip` |
+| Built by | `python3 scripts/build_firefox.py` (also `npm run build:firefox`) |
+| Browsers | Firefox 140+ (desktop) · Firefox for Android 142+ |
+| Validation | `npx web-ext lint` — 0 errors, 0 notices, 0 warnings |
+
+1. Build or download `sensory-shield-1.0.1-firefox.zip` and unzip it.
+2. Open `about:debugging#/runtime/this-firefox`.
+3. Click **Load Temporary Add-on…** and pick `manifest.json` inside the unzipped
+   folder.
+
+A temporary add-on disappears when Firefox restarts. For a permanent install you
+need a signed build:
+
+1. Create a free account at <https://addons.mozilla.org/developers/>.
+2. Submit the zip as a new add-on, or sign it locally with
+   `npx web-ext sign --api-key <key> --api-secret <secret>`.
+3. Install the resulting `.xpi` from the AMO listing.
+
+**Firefox permission note.** On Firefox, host permissions (`<all_urls>`) are
+granted by the user rather than automatically. The first time you activate
+Sensory Shield on a site, Firefox asks whether to allow access — accept it, or the
+content script cannot run.
+
+**Data collection.** The Firefox manifest declares
+`data_collection_permissions.required: ["none"]` and `optional: ["websiteContent"]`.
+That mirrors the design: on the default local path nothing leaves the browser, and
+page text only reaches an endpoint you configured yourself after saving an API key.
+
+## 4. Optional: enable remote rewrite
 
 Remote rewrite is off by default and requires your own OpenAI-compatible credentials.
 
@@ -53,7 +90,7 @@ Remote rewrite is off by default and requires your own OpenAI-compatible credent
 The key is stored only in `chrome.storage.sync` on your machine (and in your browser profile's sync data if browser
 sync is enabled). Nothing is sent anywhere until you activate the extension on a page.
 
-## 4. Verify the package before installing (optional)
+## 5. Verify the package before installing (optional)
 
 The release gate can be reproduced locally with the Python standard library only:
 
@@ -68,13 +105,13 @@ references and the integrity of the zip in `dist/`. Rebuild the zip at any time 
 python3 scripts/build_zip.py
 ```
 
-## 5. Updating
+## 6. Updating
 
 1. Download the newer zip and unzip it over (or next to) the previous folder.
 2. Open `chrome://extensions` and click the **Reload** icon on the Sensory Shield card.
 3. Reload any open article tab so the new content script is injected.
 
-## 6. Uninstalling
+## 7. Uninstalling
 
 1. Open `chrome://extensions` (or `edge://extensions`).
 2. Click **Remove** on the Sensory Shield card.
@@ -82,7 +119,7 @@ python3 scripts/build_zip.py
 
 Removing the extension also clears its stored settings. No files are written outside the extension folder.
 
-## 7. Troubleshooting
+## 8. Troubleshooting
 
 | Symptom | Cause and fix |
 | --- | --- |
@@ -93,7 +130,7 @@ Removing the extension also clears its stored settings. No files are written out
 | Some ads remain visible | Hiding rules use conservative token matching to avoid damaging page layout. Send the site's structure in an issue to extend the token list. |
 | Icons are missing after unzip | Some archive tools flatten folders. Re-unzip preserving the directory structure so that `icons/icon128.png` exists. |
 
-## 8. Publishing to a store
+## 9. Publishing to a store
 
 The same `docs/downloads/sensory-shield-1.0.1.zip` file is the upload artifact:
 

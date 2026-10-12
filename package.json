@@ -23,7 +23,8 @@
   "scripts": {
     "build": "python3 scripts/build_zip.py",
     "verify": "python3 scripts/verify_package.py",
-    "icons": "python3 scripts/make_icons.py"
+    "icons": "python3 scripts/make_icons.py",
+    "build:firefox": "python3 scripts/build_firefox.py"
   },
   "engines": {
     "python": ">=3.9"

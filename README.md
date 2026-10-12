@@ -128,6 +128,13 @@ The demo on the landing page is a **simulation** of the card, not a capture of a
 
 Detailed troubleshooting, permission rationale and removal steps live in [INSTALL.md](INSTALL.md).
 
+**Firefox:** use `sensory-shield-1.0.1-firefox.zip` instead. Firefox does not yet
+support Manifest V3 service workers, so that build runs `background.js` as an
+event page and carries a `browser_specific_settings.gecko` block. Build it with
+`python3 scripts/build_firefox.py`; it passes `npx web-ext lint` with zero errors
+and zero warnings. Step-by-step instructions are in [INSTALL.md](INSTALL.md)
+section 3.
+
 ### From source
 
 ```bash
@@ -150,6 +157,7 @@ so the release can be reproduced on any machine with `python3`.
 | `python3 scripts/build_zip.py` | Builds `dist/sensory-shield-<version>.zip`, refreshes `docs/downloads/`, and syncs the static landing page into `docs/`. |
 | `python3 scripts/verify_package.py` | Static checks: manifest fields, referenced files, icon sizes, forbidden placeholder strings, CDN references and zip integrity. |
 | `python3 scripts/make_icons.py` | Regenerates `icons/icon16/32/48/128.png`. |
+| `python3 scripts/build_firefox.py` | Builds the Firefox variant (`dist/sensory-shield-<version>-firefox.zip`) from `manifest.firefox.json`, which swaps the MV3 service worker for an event page. |
 | `python3 tests/run.py` | Runs `tests/harness.html` in headless Chrome and prints every assertion. Exit code is non-zero if any fails. |
 
 `verify_package.py` is the release gate: it fails on unresolved placeholders, leftover scaffolding, external CDN
