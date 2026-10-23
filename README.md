@@ -1,5 +1,7 @@
 # Sensory Shield
 
+**Language:** [![English](https://img.shields.io/badge/English-English-blue?style=flat-square)](README.en.md) [![繁體中文](https://img.shields.io/badge/%E7%B9%81%E9%AB%94%E4%B8%AD%E6%96%87-%E4%B8%AD%E6%96%87%E7%89%88-blue?style=flat-square)](README.zh-TW.md)
+
 > A Manifest V3 browser extension that turns overwhelming pages into a calm, low-stimulation reading view.
 
 [![Version](https://img.shields.io/badge/version-1.0.1-2563eb.svg)](#)
